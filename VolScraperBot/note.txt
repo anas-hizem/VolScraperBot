@@ -1,0 +1,226 @@
+# import scrapy
+# from scrapy.crawler import CrawlerProcess
+# from spiders.volspider import VolSpider  # Importez correctement le nom de la classe du spider
+
+# def main():
+#     # Créer une instance de CrawlerProcess
+#     process = CrawlerProcess()
+
+#     # Ajouter le spider VolSpider à la processus
+#     process.crawl(VolSpider)  # Utilisez le nom de la classe correct
+
+#     # Démarrer le processus
+#     process.start()
+
+# if __name__ == "__main__":
+#     main()
+# ******************************
+# import scrapy
+# from scrapy.crawler import CrawlerProcess
+# from spiders.volspider import VolSpider 
+# from spiders.volspider1 import VolSpider1
+# from spiders.volspider2 import VolSpider2
+
+# from scrapy import spiderloader
+# from scrapy.utils.project import get_project_settings
+# from twisted.internet import reactor, defer
+
+# def run_spider(spider_name, **kwargs):
+#     settings = get_project_settings()
+#     spider_loader = spiderloader.SpiderLoader.from_settings(settings)
+#     spider_cls = spider_loader.load(spider_name)
+#     runner = scrapy.crawler.CrawlerRunner(settings)
+#     return runner.crawl(spider_cls, **kwargs)
+
+# @defer.inlineCallbacks
+# def main():
+#     # Demander les informations nécessaires à l'utilisateur
+#     place_of_departure = input("Entrez le lieu de départ : ")
+#     place_of_arrival = input("Entrez le lieu d'arrivée : ")
+#     type = input("Entrez le type (aller-retour ou aller simple) : ")
+#     if type == 'aller-retour':
+#         check_in_date = input("Entrez la date de départ (jj mmm aaaa) example 18 fév 2024 : ")
+#         check_out_date = input("Entrez la date de retour (jj mmm aaaa) example 18 fév 2024 : ")
+#     else:
+#         check_in_date = input("Entrez la date et l'heure de départ (jj mmm aaaa) : ")
+#         check_out_date = None
+
+#     # Lancer les spiders en parallèle
+#     yield run_spider('volspider', place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date) 
+#     yield run_spider('volspider1', place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date)
+#     yield run_spider('volspider2', place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date)
+
+# if __name__ == '__main__':
+#     # Démarrer le réacteur Twisted avec la coroutine main()
+#     defer.ensureDeferred(main())
+#     reactor.run()
+# ******************************
+# import pymongo
+# from itemadapter import ItemAdapter
+# from scrapy.crawler import CrawlerProcess
+# from spiders.VolSpider3 import VolSpider3
+
+# class MongoDBPipeline:
+#     def  __init__(self):
+#         self.conn = pymongo.MongoClient('localhost', 27017)  # Connectez-vous à MongoDB
+#         db = self.conn['data_of_nouvelair']  # Créez une base de données
+#         self.collection = db['vols']  # Créez une collection dans la base de données
+
+#     def process_item(self, item, spider):
+#         self.collection.insert_one(ItemAdapter(item).asdict())  # Insérez l'élément dans MongoDB
+#         return item
+
+# def main():
+#     # Demander les informations nécessaires à l'utilisateur
+#     place_of_departure = input("Entrez le lieu de départ : ")
+#     place_of_arrival = input("Entrez le lieu d'arrivée : ")
+#     type = input("Entrez le type (aller-retour ou aller simple) : ")
+#     if type == 'aller-retour':
+#         check_in_date = input("Entrez la date de départ (jj mmm aaaa) example 18 fév 2024 : ")
+#         check_out_date = input("Entrez la date de retour (jj mmm aaaa) example 18 fév 2024 : ")
+#     else:
+#         check_in_date = input("Entrez la date et l'heure de départ (jj mmm aaaa) : ")
+#         check_out_date = None
+
+#     # Créez une instance de CrawlerProcess avec la pipeline MongoDB
+#     process = CrawlerProcess(settings={
+#         'ITEM_PIPELINES': {'__main__.MongoDBPipeline': 1},
+#     })
+
+#     # Ajouter le spider VolSpider à la processus
+#     process.crawl(VolSpider3, place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date)
+
+#     # Démarrer le processus
+#     process.start()
+
+# if __name__ == "__main__":
+#     main()
+
+# ****************
+# import os
+# import pymongo
+# from itemadapter import ItemAdapter
+# from scrapy.crawler import CrawlerProcess
+# from threading import Thread
+# from spiders.VolSpider import VolSpider
+# from spiders.VolSpider1 import VolSpider1
+# from spiders.VolSpider2 import VolSpider2
+# from spiders.VolSpider3 import VolSpider3
+
+# # Définir le réacteur Twisted approprié
+# os.environ['TWISTED_REACTOR'] = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
+
+# class MongoDBPipeline:
+#     def __init__(self):
+#         self.conn = pymongo.MongoClient('localhost', 27017)  # Connectez-vous à MongoDB
+#         db = self.conn['data_of_nouvelair']  # Créez une base de données
+#         self.collection = db['vols']  # Créez une collection dans la base de données
+
+#     def process_item(self, item, spider):
+#         self.collection.insert_one(ItemAdapter(item).asdict())  # Insérez l'élément dans MongoDB
+#         return item
+
+# def run_spider(spider_cls, **kwargs):
+#     process = CrawlerProcess(settings={
+#         'ITEM_PIPELINES': {'__main__.MongoDBPipeline': 1},
+#     })
+#     process.crawl(spider_cls, **kwargs)
+#     process.start()
+
+# def main():
+#     # Connexion à MongoDB
+#     conn = pymongo.MongoClient('localhost', 27017)
+#     db = conn['data_of_nouvelair']
+#     collection = db['vols']
+    
+#     # Suppression de tous les documents de la collection
+#     collection.delete_many({})
+#     # Demander les informations nécessaires à l'utilisateur
+#     place_of_departure = input("Entrez le lieu de départ : ")
+#     place_of_arrival = input("Entrez le lieu d'arrivée : ")
+#     type = input("Entrez le type (aller-retour ou aller simple) : ")
+#     if type == 'aller-retour':
+#         check_in_date = input("Entrez la date de départ (jj mmm aaaa) example 18 fév 2024 : ")
+#         check_out_date = input("Entrez la date de retour (jj mmm aaaa) example 18 fév 2024 : ")
+#     else:
+#         check_in_date = input("Entrez la date et l'heure de départ (jj mmm aaaa) : ")
+#         check_out_date = None
+
+#     # Démarrer les spiders en parallèle
+#     spider1_thread = Thread(target=run_spider, args=(VolSpider1, ), kwargs={'place_of_departure': place_of_departure, 'place_of_arrival': place_of_arrival, 'type': type, 'check_in_date': check_in_date, 'check_out_date': check_out_date})
+#     spider2_thread = Thread(target=run_spider, args=(VolSpider, ), kwargs={'place_of_departure': place_of_departure, 'place_of_arrival': place_of_arrival, 'type': type, 'check_in_date': check_in_date, 'check_out_date': check_out_date})
+#     spider3_thread = Thread(target=run_spider, args=(VolSpider2, ), kwargs={'place_of_departure': place_of_departure, 'place_of_arrival': place_of_arrival, 'type': type, 'check_in_date': check_in_date, 'check_out_date': check_out_date})    
+#     spider4_thread = Thread(target=run_spider, args=(VolSpider3, ), kwargs={'place_of_departure': place_of_departure, 'place_of_arrival': place_of_arrival, 'type': type, 'check_in_date': check_in_date, 'check_out_date': check_out_date})
+
+#     spider1_thread.start()
+#     spider2_thread.start()
+#     spider3_thread.start()
+#     spider4_thread.start()
+
+#     # spider1_thread.join()
+#     # spider2_thread.join()
+#     # spider3_thread.join()
+#     # spider4_thread.join()
+
+# if __name__ == "__main__":
+#     main()
+# -------------------------------------
+# import os
+# import pymongo
+# from itemadapter import ItemAdapter
+# from scrapy.crawler import CrawlerProcess
+# from threading import Thread
+# from twisted.internet import reactor
+# from spiders.VolSpider import VolSpider
+# from spiders.VolSpider1 import VolSpider1
+# from spiders.VolSpider2 import VolSpider2
+
+# # Définir le réacteur Twisted approprié
+# os.environ['TWISTED_REACTOR'] = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
+
+# class MongoDBPipeline:
+#     def __init__(self):
+#         self.conn = pymongo.MongoClient('localhost', 27017)  # Connectez-vous à MongoDB
+#         db = self.conn['data_of_nouvelair']  # Créez une base de données
+#         self.collection = db['vols']  # Créez une collection dans la base de données
+
+#     def process_item(self, item, spider):
+#         self.collection.insert_one(ItemAdapter(item).asdict())  # Insérez l'élément dans MongoDB
+#         return item
+
+# def run_spider(spider_cls, **kwargs):
+#     process = CrawlerProcess(settings={
+#         'ITEM_PIPELINES': {'__main__.MongoDBPipeline': 1},
+#     })
+#     process.crawl(spider_cls, **kwargs)
+#     process.start()
+
+# def main():
+#     # Connexion à MongoDB
+#     conn = pymongo.MongoClient('localhost', 27017)
+#     db = conn['data_of_nouvelair']
+#     collection = db['vols']
+    
+#     # Suppression de tous les documents de la collection
+#     collection.delete_many({})
+#     # Demander les informations nécessaires à l'utilisateur
+#     place_of_departure = input("Entrez le lieu de départ : ")
+#     place_of_arrival = input("Entrez le lieu d'arrivée : ")
+#     type = input("Entrez le type (aller-retour ou aller simple) : ")
+#     if type == 'aller-retour':
+#         check_in_date = input("Entrez la date de départ (jj mmm aaaa) example 18 fév 2024 : ")
+#         check_out_date = input("Entrez la date de retour (jj mmm aaaa) example 18 fév 2024 : ")
+#     else:
+#         check_in_date = input("Entrez la date et l'heure de départ (jj mmm aaaa) : ")
+#         check_out_date = None
+
+#     # Démarrer les spiders dans le thread principal
+#     reactor.callFromThread(run_spider, VolSpider1, place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date)
+#     reactor.callFromThread(run_spider, VolSpider2, place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date)
+#     reactor.callFromThread(run_spider, VolSpider, place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date)
+
+#     # Démarrer le réacteur Twisted
+#     reactor.run()
+
+# if __name__ == "__main__":
+#     main()
