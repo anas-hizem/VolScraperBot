@@ -2,42 +2,35 @@ import scrapy
 from .TunisairExpressSelenium import Booking
 from datetime import datetime, timedelta
 class TunisairExpressSpider(scrapy.Spider):
-    name = "volspider1"
+    name = "TunisairExpressSpider"
     allowed_domains = ["tunisairexpress.net"]
     def extraire_heure(self,texte):
-        # Séparer l'heure de la ville
         heure_ville = texte.split()[0]
-        # Extraire l'heure et les minutes
         heure, minute = heure_ville.split(':')
         return heure + ':' + minute
     def change_format (self, place) :
-            if place=='tunis' :
+            if str(place).lower() =='tunis' :
                 return 'TUN'                                 
-            elif place== 'paris' :
+            elif str(place).lower() == 'paris' :
                 return'ORY'
-            elif place  == 'naples':                   
+            elif str(place).lower()  == 'naples':                   
                 return"NAP"
-            elif place == "ROME" :
+            elif  str(place).lower() == "rome" :
                 return "ROM"
-            elif  place== "maltes" :
+            elif  str(place).lower() == "maltes" :
                 return "MAL"
-            elif  place == "palerme" :
+            elif  str(place).lower()  == "palerme" :
                 return "PLO"
-            elif  place == "consatantine" :
+            elif  str(place).lower() == "consatantine" :
                 return "CZL"
-            elif  place == "TRIPOLI" :
+            elif  str(place).lower() == "tripoli" :
                 return "MJI"
-            else:return "TUN"
+            else:
+                return "TUN"
     def next_date(self,input_date):
-        # Convertir la chaîne d'entrée en objet datetime
         date_obj = datetime.strptime(input_date, '%d/%m/%Y')
-        
-        # Ajouter un jour à la date
         next_day = date_obj + timedelta(days=0)
-        
-        # Formater la date suivante comme une chaîne au format "jour/mois/année"
         next_date_str = next_day.strftime('%d/%m/%Y')
-        
         return next_date_str
 
     def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
@@ -46,7 +39,7 @@ class TunisairExpressSpider(scrapy.Spider):
         self.place_of_arrival = self.change_format(place_of_arrival)
         self.type = type
         self.check_in_date = self.next_date(check_in_date)
-        if self.type!="aller-retour":
+        if self.type == "aller-sipmle":
             self.check_out_date = None
         else:
             self.check_out_date = self.next_date(check_out_date)

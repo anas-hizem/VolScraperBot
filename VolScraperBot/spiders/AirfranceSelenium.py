@@ -159,9 +159,10 @@ class Booking(uc.Chrome):
             return(arrival_text)
 
     def get_outward_price(self):
-        outward_price = WebDriverWait(self, 20).until(
+        outward_price_elem = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/div/bw-itinerary-select/button/span[2]/span/span/span[2]/bw-price/span'))
-        ).text    
+        ).text  
+        outward_price = outward_price_elem.split()[0]
         return(outward_price)
 
     def get_outward_tarvel_date(self):
@@ -176,8 +177,9 @@ class Booking(uc.Chrome):
         outward_time_element = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-times/span'))
         ).text
-        outward_time = outward_time_element.split(" - ")
-        return(outward_time[0])
+        outward_time_1 = outward_time_element.split(" - ")[0]
+        outward_time = outward_time_1.split()[0]
+        return(outward_time)
     
     def get_outward__tarvel_duration(self):
         outward_trip_duration = WebDriverWait(self, 20).until(
@@ -215,26 +217,28 @@ class Booking(uc.Chrome):
             self.implicitly_wait(50)
 
     def get_return_travel_price(self,typeoftrip):
-        if typeoftrip=="aller-retour":
-            return_price = WebDriverWait(self, 20).until(
+        if typeoftrip == "aller-retour":
+            return_price_elem = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/div/bw-itinerary-select/button/span[2]/span/span/span[2]/bw-price/span'))
-            ).text    
+            ).text
+            return_price = return_price_elem.split()[0]
             return(return_price)
     def get_return_travel_time(self,typeoftrip):
-        if typeoftrip=="aller-retour":
+        if typeoftrip == "aller-retour":
             return_time_element = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-times/span'))
             ).text
-            return_time = return_time_element.split(" - ")
-            return(return_time[0])
+            return_time_1 = return_time_element.split(" - ")[0]
+            return_time = return_time_1.split()[0]
+            return(return_time)
     def get_return_trip_duration(self,typeoftrip):
-        if typeoftrip=="aller-retour":
+        if typeoftrip == "aller-retour":
             return_trip_duration = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-duration/div'))
             ).text    
             return(return_trip_duration)
     def get_return_tarvel_date(self,typeoftrip):
-        if typeoftrip=="aller-retour":
+        if typeoftrip == "aller-retour":
             date_return_trip_element  = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR ,'p[class="bwc-o-body bw-search-fare-time__date qa-search-fare-datetime"]'))
             )
