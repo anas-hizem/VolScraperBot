@@ -124,13 +124,13 @@ class Booking (webdriver.Chrome):
 
     def get_deparature_place(self) :
         outward_place = WebDriverWait(self, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, '.calendarPerBound-cell-display-outbound .calendarPerBound-outbound-city.fromcity'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#calendarPerBound-cell-display-outbound .calendarPerBound-outbound-city.fromcity'))
         ).text
         return outward_place
 
     def get_arrival_place(self) :
         return_place = WebDriverWait(self, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, '.calendarPerBound-cell-display-outbound .calendarPerBound-outbound-city.tocity'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#calendarPerBound-cell-display-outbound .calendarPerBound-outbound-city.tocity'))
         ).text
         return return_place   
 
