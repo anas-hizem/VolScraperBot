@@ -1,4 +1,4 @@
-# Scrapy settings for volscraper project
+# Scrapy settings for VolScraperBot project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -11,7 +11,12 @@ BOT_NAME = "VolScraperBot"
 
 SPIDER_MODULES = ["VolScraperBot.spiders"]
 NEWSPIDER_MODULE = "VolScraperBot.spiders"
+SCRAPEOPS_API_KEY = '5720aa13-ec20-43d1-a107-68c0a5713b65' 
+SCRAPEOPS_FAKE_USER_AGENT_ENDPOINT = 'https://headers.scrapeops.io/v1/user-agents'
+SCRAPEOPS_FAKE_USER_AGENT_ENABLED = True
+SCRAPEOPS_NUM_RESULTS = 50
 
+SCRAPEOPS_PROXY_SETTINGS = {'country': 'us'}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -46,13 +51,15 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "volscraper.middlewares.VolscraperSpiderMiddleware": 543,
+#    "VolScraperBot.middlewares.VolscraperSpiderMiddleware": 543,
+#    'VolScraperBot.middlewares.ScrapeOpsFakeUserAgentMiddleware': 400,
+
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "volscraper.middlewares.VolscraperDownloaderMiddleware": 543,
+#    "VolScraperBot.middlewares.VolscraperDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions

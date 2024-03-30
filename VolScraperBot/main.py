@@ -35,7 +35,7 @@ def main():
     collection.delete_many({})
     place_of_departure = input("Entrez le lieu de départ : ")
     place_of_arrival = input("Entrez le lieu d'arrivée : ")
-    type = input("Entrez le type (aller-retour ou aller simple) : ")
+    type = input("Entrez le type (aller-retour ou aller-simple) : ")
     if type == 'aller-retour':
         check_in_date = input("Entrez la date de départ (jj/mmm/aaaa) : ")
         check_out_date = input("Entrez la date de retour (jj/mmm/aaaa) : ")
