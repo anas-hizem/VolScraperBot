@@ -6,21 +6,26 @@ class TunisairSpider(scrapy.Spider):
     name = 'TunisairSpider'
     allowed_domains = ["tunisair.tn"]
 
-    def format_date(self,date):
-        date_convertie = date.replace('/', '-')
-        return date_convertie
+    def format_date(self, date_str):
+        try:
+            date_obj = datetime.strptime(date_str, '%d/%m/%Y')
+            formatted_date = date_obj.strftime('%d-%m-%Y')
+            return formatted_date
+        except ValueError:
+            return None
 
-    
+    def validate_input(self):
+        if not all([self.place_of_departure, self.place_of_arrival, self.type, self.check_in_date]):
+            raise ValueError("Entrée invalide : Veuillez fournir les informations nécessaires.")
+
     def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
         super(TunisairSpider, self).__init__(*args, **kwargs)
         self.place_of_departure = place_of_departure
         self.place_of_arrival = place_of_arrival
         self.type = type
-        self.check_in_date =self.format_date(check_in_date)
-        if self.type == "aller-simple":
-            self.check_out_date = None
-        else:
-            self.check_out_date = self.format_date(check_out_date)
+        self.check_in_date = self.format_date(check_in_date)
+        self.check_out_date = self.format_date(check_out_date) if type == "aller-retour" else None
+        self.validate_input()
 
 
     def start_requests(self):

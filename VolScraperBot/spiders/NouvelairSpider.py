@@ -2,7 +2,7 @@ import scrapy
 from .NouvelairSelenium import Booking
 
 class NouvelairSpider(scrapy.Spider):
-    name = "volspider"
+    name = "NouvelairSpider"
     allowed_domains = ["nouvelair.com"]
 
     def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
@@ -33,7 +33,6 @@ class NouvelairSpider(scrapy.Spider):
                 '12': 'déc'
             }
             month_fr = months_mapping.get(month, month)
-            # Créer la nouvelle chaîne de date au format "18 jan 2024"
             new_date_format = f"{day} {month_fr} {year}"
             return new_date_format
         else:
@@ -50,7 +49,6 @@ class NouvelairSpider(scrapy.Spider):
         inst.click_search()
         search_url = inst.page_loaded()
         yield scrapy.Request(url=search_url)
-        inst.close_browser()
 
     def parse(self, response):
         if self.type == "aller-retour":

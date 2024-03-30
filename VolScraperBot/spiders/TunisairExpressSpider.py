@@ -1,48 +1,54 @@
 import scrapy
 from .TunisairExpressSelenium import Booking
 from datetime import datetime, timedelta
-class TunisairExpressSpider(scrapy.Spider):
-    name = "TunisairExpressSpider"
-    allowed_domains = ["tunisairexpress.net"]
-    def extraire_heure(self,texte):
-        heure_ville = texte.split()[0]
-        heure, minute = heure_ville.split(':')
-        return heure + ':' + minute
-    def change_format (self, place) :
-            if str(place).lower() =='tunis' :
-                return 'TUN'                                 
-            elif str(place).lower() == 'paris' :
-                return'ORY'
-            elif str(place).lower()  == 'naples':                   
-                return"NAP"
-            elif  str(place).lower() == "rome" :
-                return "ROM"
-            elif  str(place).lower() == "maltes" :
-                return "MAL"
-            elif  str(place).lower()  == "palerme" :
-                return "PLO"
-            elif  str(place).lower() == "consatantine" :
-                return "CZL"
-            elif  str(place).lower() == "tripoli" :
-                return "MJI"
-            else:
-                return "TUN"
-    def next_date(self,input_date):
-        date_obj = datetime.strptime(input_date, '%d/%m/%Y')
-        next_day = date_obj + timedelta(days=0)
-        next_date_str = next_day.strftime('%d/%m/%Y')
-        return next_date_str
 
-    def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
+class TunisairExpressSpider(scrapy.Spider):
+    name = "volspider1"
+    allowed_domains = ["tunisairexpress.net"]
+
+    def extraire_heure(self, texte):
+        try:
+            heure_ville = texte.split()[0]
+            heure, minute = heure_ville.split(':')
+            return heure + ':' + minute
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'extraction de l'heure : {e}")
+            return None
+
+    def change_format(self, place):
+        places_mapping = {
+            'tunis': 'TUN',
+            'paris': 'ORY',
+            'naples': 'NAP',
+            'rome': 'ROM',
+            'maltes': 'MAL',
+            'palerme': 'PLO',
+            'consatantine': 'CZL',
+            'tripoli': 'MJI'
+        }
+        return places_mapping.get(place.lower(), None)
+
+    def next_date(self, input_date):
+        try:
+            date_obj = datetime.strptime(input_date, '%d/%m/%Y')
+            next_day = date_obj + timedelta(days=0) 
+            return next_day.strftime('%d/%m/%Y')
+        except Exception as e:
+            self.logger.error(f"Erreur lors du calcul de la prochaine date : {e}")
+            return None
+
+    def validate_input(self):
+        if not all([self.place_of_departure, self.place_of_arrival, self.type, self.check_in_date]):
+            raise ValueError("Entrée invalide : Veuillez fournir les informations nécessaires.")
+
+    def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None,check_out_date=None, *args, **kwargs):
         super(TunisairExpressSpider, self).__init__(*args, **kwargs)
         self.place_of_departure = self.change_format(place_of_departure)
         self.place_of_arrival = self.change_format(place_of_arrival)
         self.type = type
         self.check_in_date = self.next_date(check_in_date)
-        if self.type == "aller-sipmle":
-            self.check_out_date = None
-        else:
-            self.check_out_date = self.next_date(check_out_date)
+        self.check_out_date = self.next_date(check_out_date) if type == "aller-retour" else None
+        self.validate_input()
     
     def start_requests(self):
         inst = Booking()
@@ -58,8 +64,8 @@ class TunisairExpressSpider(scrapy.Spider):
 
     def parse(self, response):
         inst = response.meta['booking_instance']
-        outward_departure_place = inst.get_deparature_place(self.place_of_departure)
-        outward_arrival_place = inst.get_arrival_place(self.place_of_arrival)
+        outward_departure_place = inst.get_deparature_place()
+        outward_arrival_place = inst.get_arrival_place()
         return_arrival_place = outward_arrival_place
         return_departure_place = outward_departure_place
         outward_price = inst.get_outward_price()

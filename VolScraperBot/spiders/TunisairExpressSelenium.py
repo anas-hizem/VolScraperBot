@@ -120,10 +120,22 @@ class Booking (webdriver.Chrome):
                 ).text
                 return return_price
 
-    def get_deparature_place(self,place_of_departure) :
-        return place_of_departure
-    def get_arrival_place(self,place_of_arrival) :
-        return place_of_arrival
+
+
+    def get_deparature_place(self) :
+        outward_place = WebDriverWait(self, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '.calendarPerBound-cell-display-outbound .calendarPerBound-outbound-city.fromcity'))
+        ).text
+        return outward_place
+
+    def get_arrival_place(self) :
+        return_place = WebDriverWait(self, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '.calendarPerBound-cell-display-outbound .calendarPerBound-outbound-city.tocity'))
+        ).text
+        return return_place   
+
+
+
     def get_url(self):
         return self.current_url
     

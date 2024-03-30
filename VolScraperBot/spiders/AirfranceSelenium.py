@@ -32,7 +32,7 @@ class Booking(uc.Chrome):
         self.implicitly_wait(30)
 
     def click_continue_buton(self):
-        time.sleep(2)
+        time.sleep(3)
         self.implicitly_wait(30)
         continue_button = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-homepage-app-root/div/div[1]/bw-homepage-hero-image/div/div/div[1]/div/bw-search-widget/mat-card/form/div/div/div[1]/button'))

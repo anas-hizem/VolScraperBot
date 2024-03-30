@@ -90,6 +90,7 @@ class Booking (webdriver.Chrome):
         submiting_btn.click()
     
     def page_loaded(self):
+        time.sleep(1)
         return self.current_url
     
     
