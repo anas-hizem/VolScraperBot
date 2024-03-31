@@ -70,11 +70,13 @@ class Booking(uc.Chrome):
             pass
 
     def open_calandar(self , type_trip):
-        self.implicitly_wait(30)
+        self.implicitly_wait(60)
         if(type_trip == "aller-retour"):
-            calendar = self.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/main/section/section/div/div/div/div/div[2]/div/div/div/div/div/div/div[1]/form/div[1]/div[2]/fieldset/input')
+            calendar = self.find_element(By.CSS_SELECTOR,'input[class="calendar form-control"][id="edit-date"]')
             calendar.click()
-            
+        self.implicitly_wait(60)
+
+
     def select_check_in_date(self ,check_in_date , type_trip):
         self.implicitly_wait(30)
         if(type_trip == "aller-retour"):           
@@ -85,6 +87,7 @@ class Booking(uc.Chrome):
             date_check_in.send_keys(check_in_date)
             date_check_in.send_keys(Keys.DOWN)
             date_check_in.send_keys(Keys.ENTER)
+
 
     def select_check_out_date(self , check_out_date  ,type_trip):
         self.implicitly_wait(30)
