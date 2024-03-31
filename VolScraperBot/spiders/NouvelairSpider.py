@@ -134,10 +134,34 @@ class NouvelairSpider(scrapy.Spider):
             }
 
     def convert_date(self, date_str):
-        # Convertir la date en format datetime
-        datetime_obj = datetime.datetime.strptime(date_str, '%d %b. %Y')
-        # Définir la localisation française pour le nom du jour et du mois
-        locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
-        # Formatter la date avec le nom du jour
-        formatted_date = datetime_obj.strftime('%a %d %b %Y')
-        return formatted_date
+        # Define a regular expression pattern to extract day, month, and year
+        date_pattern = r'(\d{1,2})\s+(\w+)\.\s+(\d{4})'  # Example: '10 avr. 2024'
+
+        # Match the pattern in the date string
+        match = re.match(date_pattern, date_str)
+
+        if match:
+            # Extract day, month, and year from the matched groups
+            day = int(match.group(1))
+            month = match.group(2)
+            year = int(match.group(3))
+
+            # Convert month abbreviation to its numeric representation
+            months_mapping = {
+                'jan': 1, 'fév': 2, 'mar': 3, 'avr': 4, 'mai': 5, 'jui': 6,
+                'jui': 7, 'aoû': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'déc': 12
+            }
+            month_numeric = months_mapping.get(month.lower())
+
+            # Set the locale to French
+            locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
+
+            # Construct datetime object
+            datetime_obj = datetime.datetime(year, month_numeric, day)
+            
+            # Format the date with full day and month names
+            formatted_date = datetime_obj.strftime('%A %d %B %Y')
+
+            return formatted_date
+        else:
+            return None

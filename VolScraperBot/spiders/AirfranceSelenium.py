@@ -22,7 +22,7 @@ class Booking(uc.Chrome):
 
     def land_first_page (self) :
         self.get("https://wwws.airfrance.tn/")
-        self.implicitly_wait(110)
+        self.implicitly_wait(60)
 
     def accept_cookies(self):
         accept_button = WebDriverWait(self, 10).until(
@@ -32,7 +32,7 @@ class Booking(uc.Chrome):
         self.implicitly_wait(30)
 
     def click_continue_buton(self):
-        time.sleep(3)
+        time.sleep(1)
         self.implicitly_wait(30)
         continue_button = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-homepage-app-root/div/div[1]/bw-homepage-hero-image/div/div/div[1]/div/bw-search-widget/mat-card/form/div/div/div[1]/button'))
@@ -143,20 +143,23 @@ class Booking(uc.Chrome):
         return self.current_url    
     
 
-    def  get_deparature_place(self):
-        outward_trip_departure_place = WebDriverWait(self, 20).until(
+    def get_deparature_place(self):
+        outward_trip_departure_place_elem = WebDriverWait(self, 20).until(
         EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-itinerary-locations/bws-flight-locations/ol/li[1]'))
-        ).text    
+        ).text 
+        outward_trip_departure_place = outward_trip_departure_place_elem.split()[0].upper()
         return outward_trip_departure_place
 
     def get_arrival_place(self):
-        outward_trip_arrival_place = WebDriverWait(self, 20).until(
+        outward_trip_arrival_place_elem = WebDriverWait(self, 20).until(
         EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-itinerary-locations/bws-flight-locations/ol/li[2]')))
-        arrival_text = outward_trip_arrival_place.text
-        if "correspondance" in arrival_text: 
-            return(WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-itinerary-locations/bws-flight-locations/ol/li[3]'))).text)
+        outward_trip_arrival_place = outward_trip_arrival_place_elem.text
+        if "correspondance" in outward_trip_arrival_place:
+            outward_trip_arrival_place_elem = WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-itinerary-locations/bws-flight-locations/ol/li[3]'))).text 
+            outward_trip_arrival_place = outward_trip_arrival_place_elem.split()[0]
+            return(outward_trip_arrival_place)
         else:
-            return(arrival_text)
+            return(outward_trip_arrival_place.split()[0].upper())
 
     def get_outward_price(self):
         outward_price_elem = WebDriverWait(self, 20).until(
@@ -192,6 +195,7 @@ class Booking(uc.Chrome):
         self.implicitly_wait(30)
         WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/bw-itinerary-details-trigger/button'))).click()
         self.implicitly_wait(30)
+        time.sleep(1)
 
     
     def click_exit(self):
@@ -203,18 +207,15 @@ class Booking(uc.Chrome):
     def go_to_return_travel(self,trip_type):
         if (trip_type == "aller-retour"):
             self.implicitly_wait(50)
-            try :
-                next_page_button_1 = WebDriverWait(self, 20).until(
-                    EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/div/bw-itinerary-select/button'))
-                ).click()
-
-                next_page_button_confirm = WebDriverWait(self, 20).until(
-                    EC.presence_of_element_located((By.XPATH ,'//*[@id="mat-tab-content-4-0"]/div/section/div/bws-flight-upsell-item/div/div[2]/bws-flight-upsell-confirm/button/span[2]'))
-                )
-                self.execute_script("arguments[0].click();", next_page_button_confirm)
-            except Exception as e:
-                print("Error retrieving information:", e)
+            WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/div/bw-itinerary-select/button'))).click()
             self.implicitly_wait(50)
+            next_page_button_confirm = WebDriverWait(self, 20).until(
+                EC.presence_of_element_located((By.XPATH ,'//*[@id="mat-tab-content-4-0"]/div/section/div/bws-flight-upsell-item/div/div[2]/bws-flight-upsell-confirm/button/span[2]'))
+            )
+            self.execute_script("arguments[0].click();", next_page_button_confirm)
+            self.implicitly_wait(50)
+            time.sleep(1)
+
 
     def get_return_travel_price(self,typeoftrip):
         if typeoftrip == "aller-retour":

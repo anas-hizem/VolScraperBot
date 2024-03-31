@@ -63,6 +63,43 @@ class TunisairExpressSpider(scrapy.Spider):
     
 
     def parse(self, response):
+        def convert_date_format(date_str):
+            days_mapping = {
+                'Lun': 'Lundi',
+                'Mar': 'Mardi',
+                'Mer': 'Mercredi',
+                'Jeu': 'Jeudi',
+                'Ven': 'Vendredi',
+                'Sam': 'Samedi',
+                'Dim': 'Dimanche'
+            }
+            months_mapping = {
+                'Jan': 'Janvier',
+                'Fév': 'Février',
+                'Mar': 'Mars',
+                'Avr': 'Avril',
+                'Mai': 'Mai',
+                'Jui': 'Juin',
+                'Jui': 'Juillet',
+                'Aoû': 'Août',
+                'Sep': 'Septembre',
+                'Oct': 'Octobre',
+                'Nov': 'Novembre',
+                'Déc': 'Décembre'
+            }
+
+            parts = date_str.split()  
+            day_of_week = parts[0]     
+            day = parts[1]             
+            month = months_mapping.get(parts[2], parts[2])  #
+            year = parts[3]           
+            
+            return f"{days_mapping[day_of_week]} {day} {month} {year}"
+
+
+        
+
+
         inst = response.meta['booking_instance']
         outward_departure_place = inst.get_deparature_place()
         outward_arrival_place = inst.get_arrival_place()
@@ -70,8 +107,8 @@ class TunisairExpressSpider(scrapy.Spider):
         return_departure_place = outward_departure_place
         outward_price = inst.get_outward_price()
         return_price = inst.get_return_price(self.type)
-        outward_date = inst.get_outward_date()
-        return_date = inst.get_return_date(self.type)
+        outward_date = convert_date_format(inst.get_outward_date())
+        return_date = convert_date_format(inst.get_return_date(self.type))
         url_of_vol =  inst.get_url()
         inst.click_next_page()
         outward_time = inst.get_time_of_deparature_travel(self.type)
@@ -79,6 +116,8 @@ class TunisairExpressSpider(scrapy.Spider):
         return_travel_duration=inst.get_return_travel_duration(self.type)
         return_time=inst.get_time_of_return_travel(self.type)
         inst.close_browser()
+
+        
 
         if self.type == "aller-retour":
             yield {

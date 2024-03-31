@@ -18,6 +18,7 @@ class Booking (webdriver.Chrome):
         self.maximize_window()
     
     def land_first_page (self) :
+        self.implicitly_wait(30)
         self.get("https://www.nouvelair.com/fr")
 
     
@@ -38,10 +39,13 @@ class Booking (webdriver.Chrome):
         if (str(place_of_departure).lower() == "tunis"):
             city_of_departure = self.find_element(By.CSS_SELECTOR , 'li[data-option-index="2"]')
             city_of_departure.click()
+            self.implicitly_wait(30)
         else :
             country_of_departure.send_keys(place_of_departure)
             city_of_departure = self.find_element(By.CSS_SELECTOR , 'li[data-option-index="0"]')
             city_of_departure.click()
+            self.implicitly_wait(30)
+
 
 
     def select_place_of_arrival(self , place_of_arrival): 
@@ -51,11 +55,12 @@ class Booking (webdriver.Chrome):
         country_of_arrival=WebDriverWait(self,10).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR,'input[class="MuiInputBase-input MuiInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused"][value=""]'))
         )
+        self.implicitly_wait(30)
         country_of_arrival.send_keys(place_of_arrival)
         menu_des_aereport = WebDriverWait(self, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[class="MuiButtonBase-root MuiListItem-root country-collapse MuiListItem-gutters MuiListItem-button"][role="button"]')))
         menu_des_aereport.click()
-
+        self.implicitly_wait(30)
         city_of_arrival = WebDriverWait(self, 10).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR , 'li[data-option-index="0"][role="option"]')))
         city_of_arrival.click()
@@ -69,7 +74,7 @@ class Booking (webdriver.Chrome):
             date_check_in = WebDriverWait(self, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_in_date}"]')))
             date_check_in.click()
-
+            self.implicitly_wait(30)
             date_check_out = WebDriverWait(self, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_out_date}"]')))
             date_check_out.click() 

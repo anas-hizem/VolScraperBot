@@ -85,7 +85,7 @@ class AirfranceSpider(scrapy.Spider):
                 'return_arrival_place':return_arrival_place,
                 'return_price':return_price,
                 'return_time':return_time,
-                'duration_return':return_trip_duration,
+                'duration_return':return_trip_duration + 'm',
                 'url_of_vol':url
             }
         else:
@@ -96,7 +96,7 @@ class AirfranceSpider(scrapy.Spider):
                 'outward_arrival_place':outward_arrival_place,
                 'outward_price':outward_price,
                 'outward_time':outward_time,
-                'duration':outward_travel_duration,
+                'duration':outward_travel_duration + 'm',
                 'url_of_vol':url
             }
 
