@@ -32,7 +32,7 @@ class Booking(uc.Chrome):
         self.implicitly_wait(30)
 
     def click_continue_buton(self):
-        time.sleep(1)
+        time.sleep(2)
         self.implicitly_wait(30)
         continue_button = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-homepage-app-root/div/div[1]/bw-homepage-hero-image/div/div/div[1]/div/bw-search-widget/mat-card/form/div/div/div[1]/button'))
@@ -169,11 +169,13 @@ class Booking(uc.Chrome):
         return(outward_price)
 
     def get_outward_tarvel_date(self):
+        self.implicitly_wait(30)
         date_outward_trip_element  = WebDriverWait(self, 20).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR ,'p[class="bwc-o-body bw-search-fare-time__date qa-search-fare-datetime"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR ,'.bw-search-fare-time .bwc-o-body.bw-search-fare-time__date.qa-search-fare-datetime'))
         )
         date_outward_trip_text = date_outward_trip_element.text
         date_outward_trip = date_outward_trip_text.split(',')[0]
+        self.implicitly_wait(30)
         return(date_outward_trip)
 
     def get_outward_time (self):
@@ -194,8 +196,7 @@ class Booking(uc.Chrome):
     def click_details_button(self):
         self.implicitly_wait(30)
         WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/bw-itinerary-details-trigger/button'))).click()
-        self.implicitly_wait(30)
-        time.sleep(1)
+        time.sleep(1.5)
 
     
     def click_exit(self):

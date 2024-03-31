@@ -64,7 +64,7 @@ class Booking(uc.Chrome):
             type_trip.click()
             time.sleep(1)
             type_trip.click()
-            self.implicitly_wait(30)
+            self.implicitly_wait(50)
 
         else :
             pass
@@ -110,6 +110,7 @@ class Booking(uc.Chrome):
 
 
     def set_check_in_date_one_way_trip(self , check_in_date , type_trip):
+        self.implicitly_wait(30)
         if(type_trip == "aller-simple"):
             date_check_in = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'input[class="calendar form-control"][id="edit-date"]'))
@@ -117,6 +118,8 @@ class Booking(uc.Chrome):
             date_check_in.clear()
             date_check_in.send_keys(check_in_date)
             date_check_in.send_keys(Keys.ENTER)
+            self.implicitly_wait(30)
+
 
 
 
@@ -183,14 +186,14 @@ class Booking(uc.Chrome):
         place_of_departure_element = WebDriverWait(self, 10).until(
             EC.presence_of_element_located((By.XPATH,'/html/body/section/section/div/section/section/div[2]/div/div/section/section/div[1]/section/div/section/div[4]/span/div/span/section[1]/header/div[1]/h2/div[1]/div[1]'))
         )
-        place_of_departure = place_of_departure_element.text
+        place_of_departure = place_of_departure_element.text.upper()
         return  place_of_departure
     
     def get_arrival_place(self):
         place_of_return_element = WebDriverWait(self, 10).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/section/section/div/section/section/div[2]/div/div/section/section/div[1]/section/div/section/div[4]/span/div/span/section[1]/header/div[1]/h2/div[3]/div[1]'))
         )
-        place_of_return = place_of_return_element.text
+        place_of_return = place_of_return_element.text.upper()
         return place_of_return
 
     def get_outward_time(self):

@@ -44,13 +44,51 @@ class TunisairSpider(scrapy.Spider):
         search_url = inst.page_loaded()
         yield scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
     def parse(self, response):
+        def convert_date_format(date_str):
+            if date_str is None:
+                return None
+
+            days_mapping = {
+                'Lun': 'Lundi',
+                'Mar': 'Mardi',
+                'Mer': 'Mercredi',
+                'Jeu': 'Jeudi',
+                'Ven': 'Vendredi',
+                'Sam': 'Samedi',
+                'Dim': 'Dimanche'
+            }
+            months_mapping = {
+                'Jan': 'Janvier',
+                'Fév': 'Février',
+                'Mar': 'Mars',
+                'Avr': 'Avril',
+                'Mai': 'Mai',
+                'Jui': 'Juin',
+                'Jui': 'Juillet',
+                'Aoû': 'Août',
+                'Sep': 'Septembre',
+                'Oct': 'Octobre',
+                'Nov': 'Novembre',
+                'Déc': 'Décembre'
+            }
+
+            parts = date_str.split()  
+            day_of_week = parts[0]     
+            day = parts[1]             
+            month = months_mapping.get(parts[2], parts[2])
+            year = parts[3]           
+            return f"{days_mapping[day_of_week]} {day} {month} {year}"
+
+        
+
+
         inst = response.meta['booking_instance']
         outward_departure_place = inst.get_deparature_place()
         outward_arrival_place = inst.get_arrival_place()
         return_departure_place = inst.get_arrival_place()
         return_arrival_place = inst.get_deparature_place()
-        outward_date =inst.get_outward_tarvel_date()
-        return_date = inst.get_return_tarvel_date(self.type)
+        outward_date =convert_date_format(inst.get_outward_tarvel_date())
+        return_date = convert_date_format(inst.get_return_tarvel_date(self.type))
         outward_price = inst.get_outward_price()
         return_price = inst.get_return_travel_price(self.type)
         inst.go_to_next_page()

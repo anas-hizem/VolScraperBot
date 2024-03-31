@@ -74,29 +74,29 @@ class AirfranceSpider(scrapy.Spider):
         if self.type == "aller-retour":
             yield {
                 'agence': "AIRFRANCE",
-                'outward_date':outward_date,
                 'outward_departure_place':outward_departure_place ,
                 'outward_arrival_place':outward_arrival_place,
                 'outward_price':outward_price,
                 'outward_time':outward_time,
-                'duration_outward':outward_travel_duration,
-                'return_date':return_date,
+                'duration_outward':outward_travel_duration + 'm',
+                'outward_date':outward_date,
                 'return_departure_place': return_departure_place,
                 'return_arrival_place':return_arrival_place,
                 'return_price':return_price,
                 'return_time':return_time,
                 'duration_return':return_trip_duration + 'm',
+                'return_date':return_date,
                 'url_of_vol':url
             }
         else:
             yield {
                 'agence': "AIRFRANCE",
-                'outward_date':outward_date,
                 'outward_departure_place':outward_departure_place ,
                 'outward_arrival_place':outward_arrival_place,
                 'outward_price':outward_price,
                 'outward_time':outward_time,
-                'duration':outward_travel_duration + 'm',
+                'duration_outward':outward_travel_duration + 'm',
+                'outward_date':outward_date,
                 'url_of_vol':url
             }
 

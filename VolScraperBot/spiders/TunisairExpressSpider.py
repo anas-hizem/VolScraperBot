@@ -64,6 +64,9 @@ class TunisairExpressSpider(scrapy.Spider):
 
     def parse(self, response):
         def convert_date_format(date_str):
+            if date_str is None:
+                return None
+
             days_mapping = {
                 'Lun': 'Lundi',
                 'Mar': 'Mardi',
@@ -87,11 +90,10 @@ class TunisairExpressSpider(scrapy.Spider):
                 'Nov': 'Novembre',
                 'Déc': 'Décembre'
             }
-
             parts = date_str.split()  
             day_of_week = parts[0]     
             day = parts[1]             
-            month = months_mapping.get(parts[2], parts[2])  #
+            month = months_mapping.get(parts[2], parts[2]) 
             year = parts[3]           
             
             return f"{days_mapping[day_of_week]} {day} {month} {year}"
