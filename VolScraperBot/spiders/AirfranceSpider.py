@@ -42,6 +42,8 @@ class AirfranceSpider(scrapy.Spider):
         inst.click_submit()
         search_url = inst.page_loaded()
         yield scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
+
+
     def parse(self, response):
         inst = response.meta['booking_instance']
         inst.select_filter()
@@ -65,7 +67,6 @@ class AirfranceSpider(scrapy.Spider):
         return_date = inst.get_return_tarvel_date(self.type)
         inst.click_exit()
         url=inst.page_loaded()
-        inst.close_browser()
 
         
         if self.type == "aller-retour":

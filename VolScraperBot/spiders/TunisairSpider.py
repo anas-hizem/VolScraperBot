@@ -40,6 +40,7 @@ class TunisairSpider(scrapy.Spider):
         inst.click_submit()
         search_url = inst.page_loaded()
         yield scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
+
     def parse(self, response):
         def convert_date_format(date_str):
             if date_str is None:
@@ -94,7 +95,6 @@ class TunisairSpider(scrapy.Spider):
         return_time=inst.get_return_travel_time(self.type)
         return_trip_duration = inst.get_return_trip_duration(self.type)
         url=inst.page_loaded()
-        inst.close_browser()
 
         if self.type == "aller-retour":
             yield {
