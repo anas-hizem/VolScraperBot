@@ -33,11 +33,12 @@ class Booking(uc.Chrome):
 
     def click_continue_buton(self):
         time.sleep(2)
-        self.implicitly_wait(30)
         continue_button = WebDriverWait(self, 20).until(
-            EC.presence_of_element_located((By.XPATH, '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-homepage-app-root/div/div[1]/bw-homepage-hero-image/div/div/div[1]/div/bw-search-widget/mat-card/form/div/div/div[1]/button'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="bw-search-widget__open-search-button bwc-o-body-variant ng-tns-c811177581-11 mdc-button mat-mdc-button mat-primary mat-mdc-button-base"][aria-controls="bw-search-widget-expandable"]'))
         )
         continue_button.click()
+        self.implicitly_wait(60)
+
 
     def select_type(self,type_of_travel):
         if (type_of_travel == "aller-simple"):

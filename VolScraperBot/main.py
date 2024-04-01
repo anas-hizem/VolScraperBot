@@ -110,6 +110,7 @@ from spiders.TunisairExpressSpider import TunisairExpressSpider
 from spiders.AirfranceSpider import AirfranceSpider
 from spiders.TunisairSpider import TunisairSpider
 import concurrent.futures
+import signal  # Import signal module
 
 os.environ['TWISTED_REACTOR'] = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
 
@@ -128,7 +129,12 @@ def crawl_spider(SpiderClass, place_of_departure, place_of_arrival, type, check_
     process.crawl(SpiderClass, place_of_departure=place_of_departure, place_of_arrival=place_of_arrival, type=type, check_in_date=check_in_date, check_out_date=check_out_date)
     process.start()
 
+def install_signal_handlers():
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)  # Ignore SIGTERM signal
+    signal.signal(signal.SIGINT, signal.SIG_IGN)   # Ignore SIGINT signal
+
 def main():
+    install_signal_handlers()  # Install signal handlers in the main thread
     conn = pymongo.MongoClient('localhost', 27017)
     db = conn['VolScraperBot_Data']
     collection = db['vols']
@@ -144,7 +150,7 @@ def main():
         check_out_date = None
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        spider_classes = [AirfranceSpider ]
+        spider_classes = [ NouvelairSpider ]#, AirfranceSpider , TunisairExpressSpider , TunisairSpider]
         futures = []
         for SpiderClass in spider_classes:
             futures.append(executor.submit(crawl_spider, SpiderClass, place_of_departure, place_of_arrival, type, check_in_date, check_out_date))

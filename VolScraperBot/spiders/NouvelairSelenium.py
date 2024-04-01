@@ -18,7 +18,7 @@ class Booking (webdriver.Chrome):
         self.maximize_window()
     
     def land_first_page (self) :
-        self.implicitly_wait(30)
+        self.implicitly_wait(60)
         self.get("https://www.nouvelair.com/fr")
 
     
@@ -33,40 +33,30 @@ class Booking (webdriver.Chrome):
     def select_place_of_departure(self,place_of_departure) :
         self.implicitly_wait(30)
         country_of_departure = WebDriverWait(self,10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR,'input[class="MuiInputBase-input MuiInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused"]'))
+            EC.visibility_of_element_located((By.CSS_SELECTOR,'div.MuiGrid-root.form-container.departure-container.MuiGrid-item input.MuiInputBase-input.MuiInput-input.MuiAutocomplete-input.MuiAutocomplete-inputFocused'))
         )
         country_of_departure.send_keys(place_of_departure)
         if (str(place_of_departure).lower() == "tunis"):
-            city_of_departure = self.find_element(By.CSS_SELECTOR , 'li[data-option-index="2"]')
-            city_of_departure.click()
+            self.find_element(By.CSS_SELECTOR , 'li[data-option-index="2"]').click()
             self.implicitly_wait(30)
-        else :
-            country_of_departure.send_keys(place_of_departure)
-            city_of_departure = self.find_element(By.CSS_SELECTOR , 'li[data-option-index="0"]')
-            city_of_departure.click()
-            self.implicitly_wait(30)
+            time.sleep(1)
+        elif (str(place_of_departure).lower() != "tunis"):
+            self.find_element(By.CSS_SELECTOR , 'li[data-option-index="0"]').click()
+            time.sleep(1)
 
-
-
+            
     def select_place_of_arrival(self , place_of_arrival): 
         self.implicitly_wait(30)
-        next_input=self.find_element(By.XPATH,'//*[@id="reservation-flight-tab"]/div/div[1]/div[1]/button')
-        self.implicitly_wait(30)
-        country_of_arrival = next_input.send_keys(Keys.TAB)
-        self.implicitly_wait(30)
-        country_of_arrival=WebDriverWait(self,10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR,'input[class="MuiInputBase-input MuiInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused"][value=""]'))
+        country_of_arrival = WebDriverWait(self, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'div.MuiGrid-root.form-container.destination-container.MuiGrid-item input.MuiInputBase-input.MuiInput-input.MuiAutocomplete-input.MuiAutocomplete-inputFocused'))
         )
-        self.implicitly_wait(30)
         country_of_arrival.send_keys(place_of_arrival)
-        menu_des_aereport = WebDriverWait(self, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[class="MuiButtonBase-root MuiListItem-root country-collapse MuiListItem-gutters MuiListItem-button"][role="button"]')))
-        menu_des_aereport.click()
-        self.implicitly_wait(50)
-        city_of_arrival = WebDriverWait(self, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR , 'li[data-option-index="0"][role="option"]')))
-        city_of_arrival.click()
-        self.implicitly_wait(50)
+        if (str(place_of_arrival).lower() == "tunis"):
+            self.find_element(By.CSS_SELECTOR , 'li[data-option-index="2"]').click()
+            time.sleep(1)
+        elif (str(place_of_arrival).lower() != "tunis") :
+            self.find_element(By.CSS_SELECTOR , 'li[data-option-index="0"]').click()
+            time.sleep(1)
 
 
     def select_dates (self ,check_in_date , check_out_date, type):
@@ -111,4 +101,22 @@ class Booking (webdriver.Chrome):
 
     
 
-    
+        # def select_place_of_arrival(self , place_of_arrival): 
+    #     self.implicitly_wait(30)
+    #     next_input=self.find_element(By.XPATH,'//*[@id="reservation-flight-tab"]/div/div[1]/div[1]/button')
+    #     self.implicitly_wait(30)
+    #     country_of_arrival = next_input.send_keys(Keys.TAB)
+    #     self.implicitly_wait(30)
+    #     country_of_arrival=WebDriverWait(self,10).until(
+    #         EC.visibility_of_element_located((By.CSS_SELECTOR,'input[class="MuiInputBase-input MuiInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused"][value=""]'))
+    #     )
+    #     self.implicitly_wait(30)
+    #     country_of_arrival.send_keys(place_of_arrival)
+    #     menu_des_aereport = WebDriverWait(self, 10).until(
+    #         EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[class="MuiButtonBase-root MuiListItem-root country-collapse MuiListItem-gutters MuiListItem-button"][role="button"]')))
+    #     menu_des_aereport.click()
+    #     self.implicitly_wait(50)
+    #     city_of_arrival = WebDriverWait(self, 10).until(
+    #         EC.visibility_of_element_located((By.CSS_SELECTOR , 'li[data-option-index="0"][role="option"]')))
+    #     city_of_arrival.click()
+    #     self.implicitly_wait(50)
