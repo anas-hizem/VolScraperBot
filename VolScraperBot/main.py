@@ -150,7 +150,7 @@ def main():
         check_out_date = None
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        spider_classes = [ NouvelairSpider ]#, AirfranceSpider , TunisairExpressSpider , TunisairSpider]
+        spider_classes = [ NouvelairSpider , AirfranceSpider , TunisairExpressSpider , TunisairSpider]
         futures = []
         for SpiderClass in spider_classes:
             futures.append(executor.submit(crawl_spider, SpiderClass, place_of_departure, place_of_arrival, type, check_in_date, check_out_date))
