@@ -39,10 +39,10 @@ class Booking (webdriver.Chrome):
         if (str(place_of_departure).lower() == "tunis"):
             self.find_element(By.CSS_SELECTOR , 'li[data-option-index="2"]').click()
             self.implicitly_wait(30)
-            time.sleep(1)
+            time.sleep(2)
         elif (str(place_of_departure).lower() != "tunis"):
             self.find_element(By.CSS_SELECTOR , 'li[data-option-index="0"]').click()
-            time.sleep(1)
+            time.sleep(2)
 
             
     def select_place_of_arrival(self , place_of_arrival): 
@@ -52,11 +52,13 @@ class Booking (webdriver.Chrome):
         )
         country_of_arrival.send_keys(place_of_arrival)
         if (str(place_of_arrival).lower() == "tunis"):
+            self.implicitly_wait(30)
             self.find_element(By.CSS_SELECTOR , 'li[data-option-index="2"]').click()
-            time.sleep(1)
+            time.sleep(2)
         elif (str(place_of_arrival).lower() != "tunis") :
+            self.implicitly_wait(30)
             self.find_element(By.CSS_SELECTOR , 'li[data-option-index="0"]').click()
-            time.sleep(1)
+            time.sleep(2)
 
 
     def select_dates (self ,check_in_date , check_out_date, type):
@@ -68,10 +70,12 @@ class Booking (webdriver.Chrome):
             date_check_in = WebDriverWait(self, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_in_date}"]')))
             date_check_in.click()
-            self.implicitly_wait(30)
+            time.sleep(1)
             date_check_out = WebDriverWait(self, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_out_date}"]')))
             date_check_out.click() 
+            self.implicitly_wait(30)
+
         
         else :
             self.implicitly_wait(30)
@@ -79,6 +83,8 @@ class Booking (webdriver.Chrome):
             date_check_in = WebDriverWait(self, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_in_date}"]')))
             date_check_in.click()
+            self.implicitly_wait(30)
+
             
 
     def click_search(self):
@@ -96,27 +102,3 @@ class Booking (webdriver.Chrome):
     def close_browser(self):
         self.quit()
     
-
-
-
-    
-
-        # def select_place_of_arrival(self , place_of_arrival): 
-    #     self.implicitly_wait(30)
-    #     next_input=self.find_element(By.XPATH,'//*[@id="reservation-flight-tab"]/div/div[1]/div[1]/button')
-    #     self.implicitly_wait(30)
-    #     country_of_arrival = next_input.send_keys(Keys.TAB)
-    #     self.implicitly_wait(30)
-    #     country_of_arrival=WebDriverWait(self,10).until(
-    #         EC.visibility_of_element_located((By.CSS_SELECTOR,'input[class="MuiInputBase-input MuiInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused"][value=""]'))
-    #     )
-    #     self.implicitly_wait(30)
-    #     country_of_arrival.send_keys(place_of_arrival)
-    #     menu_des_aereport = WebDriverWait(self, 10).until(
-    #         EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[class="MuiButtonBase-root MuiListItem-root country-collapse MuiListItem-gutters MuiListItem-button"][role="button"]')))
-    #     menu_des_aereport.click()
-    #     self.implicitly_wait(50)
-    #     city_of_arrival = WebDriverWait(self, 10).until(
-    #         EC.visibility_of_element_located((By.CSS_SELECTOR , 'li[data-option-index="0"][role="option"]')))
-    #     city_of_arrival.click()
-    #     self.implicitly_wait(50)

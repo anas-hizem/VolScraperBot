@@ -173,10 +173,7 @@ class Booking(uc.Chrome):
 
     def go_to_next_page(self):
         time.sleep(1)
-        button = WebDriverWait(self, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.tripsummary-section-btn div.tripsummary-btn.tripsummary-button-validate button.plnext-widget-btn.btn.btn-primary.tripsummary-btn-primary.tripSummary-btn-continue.tripsummary-btn-validate.validate-btn'))
-        )
-        button.click()
+        WebDriverWait(self, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.tripsummary-section-btn div.tripsummary-btn.tripsummary-button-validate button.plnext-widget-btn.btn.btn-primary.tripsummary-btn-primary.tripSummary-btn-continue.tripsummary-btn-validate.validate-btn'))).click()
         time.sleep(1)
 
 
@@ -197,8 +194,7 @@ class Booking(uc.Chrome):
         return place_of_return
 
     def get_outward_time(self):
-        self.implicitly_wait(30)
-        time_and_place_of_departure_element = WebDriverWait(self, 10).until(
+        time_and_place_of_departure_element = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.CSS_SELECTOR,'#tpl3_bound0-table-flightline0 .flight-details .flight-details-bound .flight-details-departure .flight-details-city'))
         )
         time_and_place_of_departure = time_and_place_of_departure_element.text
@@ -206,7 +202,7 @@ class Booking(uc.Chrome):
         return  time_of_departure_of_outward
 
     def get_outward__tarvel_duration(self):
-        duration_outward_trip_elem = WebDriverWait(self, 10).until(
+        duration_outward_trip_elem = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.CSS_SELECTOR,'#tpl3_bound0-table-flightline0 #tpl3_bound0-table-flightline-details0 .row .bound-table-flightline-header .flight-details .flight-details-custom-group .flight-details-duration .duration'))
         ).text
         duration_outward_trip = duration_outward_trip_elem.split()[2]
@@ -217,7 +213,7 @@ class Booking(uc.Chrome):
 
     def get_return_travel_time(self, type_trip):
         if type_trip == "aller-retour":
-            time_and_place_of_return_element = WebDriverWait(self, 10).until(
+            time_and_place_of_return_element = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, '#tpl3_bound1-table-flightline0 #tpl3_bound1-table-flightline-details0 .row .bound-table-flightline-header .flight-details .flight-details-bound .flight-details-departure .flight-details-city'))
             )
             time_and_place_of_return = time_and_place_of_return_element.text
@@ -226,7 +222,7 @@ class Booking(uc.Chrome):
 
     def get_return_trip_duration(self, type_trip):
         if type_trip == "aller-retour":
-            duration_return_trip_elem = WebDriverWait(self, 10).until(
+            duration_return_trip_elem = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, '#tpl3_bound1-table-flightline0 #tpl3_bound1-table-flightline-details0 .row .bound-table-flightline-header .flight-details .flight-details-custom-group .flight-details-duration .duration'))
             ).text
             duration_return_trip = duration_return_trip_elem.split()[2]

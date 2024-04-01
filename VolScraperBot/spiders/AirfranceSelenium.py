@@ -133,11 +133,10 @@ class Booking(uc.Chrome):
 
 
     def select_filter(self):
-        self.implicitly_wait(30)
-        meilleur_tarif = WebDriverWait(self, 20).until(
-            EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-filters-bar/div/bw-flight-list-result-sort/div/bwc-form-input-container/div/mat-form-field/div[1]/div[2]/div/select/option[1]'))
-        )
-        meilleur_tarif.click()
+        self.implicitly_wait(60)
+        WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-filters-bar/div/bw-flight-list-result-sort/div/bwc-form-input-container/div/mat-form-field/div[1]/div[2]/div/select/option[1]'))).click()
+        time.sleep(1)
+
 
 
     def page_loaded(self):

@@ -15,9 +15,7 @@ class AirfranceSpider(scrapy.Spider):
         except ValueError:
             return None
 
-    def validate_input(self):
-        if not all([self.place_of_departure, self.place_of_arrival, self.type, self.check_in_date]):
-            raise ValueError("Entrée invalide : Veuillez fournir les informations nécessaires.")
+
 
     def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None,check_out_date=None, *args, **kwargs):
         super(AirfranceSpider, self).__init__(*args, **kwargs)
@@ -26,7 +24,6 @@ class AirfranceSpider(scrapy.Spider):
         self.type = type
         self.check_in_date = self.format_date(check_in_date)
         self.check_out_date = self.format_date(check_out_date) if type == "aller-retour" else None
-        self.validate_input()
 
 
     def start_requests(self):

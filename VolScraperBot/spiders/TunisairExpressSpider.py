@@ -37,9 +37,6 @@ class TunisairExpressSpider(scrapy.Spider):
             self.logger.error(f"Erreur lors du calcul de la prochaine date : {e}")
             return None
 
-    def validate_input(self):
-        if not all([self.place_of_departure, self.place_of_arrival, self.type, self.check_in_date]):
-            raise ValueError("Entrée invalide : Veuillez fournir les informations nécessaires.")
 
     def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None,check_out_date=None, *args, **kwargs):
         super(TunisairExpressSpider, self).__init__(*args, **kwargs)
@@ -48,7 +45,6 @@ class TunisairExpressSpider(scrapy.Spider):
         self.type = type
         self.check_in_date = self.next_date(check_in_date)
         self.check_out_date = self.next_date(check_out_date) if type == "aller-retour" else None
-        self.validate_input()
     
     def start_requests(self):
         inst = Booking()
