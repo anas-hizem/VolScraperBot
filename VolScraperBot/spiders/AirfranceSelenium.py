@@ -198,6 +198,7 @@ class Booking(uc.Chrome):
         WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/bw-itinerary-details-trigger/button'))).click()
         time.sleep(1.5)
 
+
     
     def click_exit(self):
         self.implicitly_wait(30)
@@ -241,6 +242,7 @@ class Booking(uc.Chrome):
             return(return_trip_duration)
     def get_return_tarvel_date(self,typeoftrip):
         if typeoftrip == "aller-retour":
+            self.implicitly_wait(60)
             date_return_trip_element  = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR ,'p[class="bwc-o-body bw-search-fare-time__date qa-search-fare-datetime"]'))
             )

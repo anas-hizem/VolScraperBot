@@ -45,59 +45,48 @@ class NouvelairSpider(scrapy.Spider):
         inst = Booking()
         inst.land_first_page()
         inst.accept_cookies()
-        inst.select_place_of_departure(self.place_of_departure)  # Utilisez self.place_of_departure
-        inst.select_place_of_arrival(self.place_of_arrival)  # Utilisez self.place_of_arrival
-        inst.select_dates(self.check_in_date, self.check_out_date, self.type)  # Utilisez self.check_in_date, self.check_out_date et self.type
+        inst.select_place_of_departure(self.place_of_departure) 
+        inst.select_place_of_arrival(self.place_of_arrival)  
+        inst.select_dates(self.check_in_date, self.check_out_date, self.type) 
         inst.click_search()
         search_url = inst.page_loaded()
-        item =  scrapy.Request(url=search_url)
+        yield  scrapy.Request(url=search_url)
 
     def parse(self, response):
         class DateConverter:
             def __init__(self):
-                # Initialisation de la locale en français
                 locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
             def convert_date(self, date_str):
-                # Définir un modèle d'expression régulière pour extraire le jour, le mois et l'année
-                date_pattern = r'(\d{1,2})\s+(\w+\.?\w*)\s+(\d{4})'  # Exemple: '28 mai 2024'
-
-                # Correspondre au modèle dans la chaîne de date
+                date_pattern = r'(\d{1,2})\s+(\w+\.?\w*)\s+(\d{4})'
                 match = re.match(date_pattern, date_str)
-
                 if match:
-                    # Extraire le jour, le mois et l'année des groupes correspondants
                     day = int(match.group(1))
                     month = match.group(2)
                     year = int(match.group(3))
-
-                    # Convertir l'abréviation du mois en sa représentation numérique
                     month_numeric = self.convert_month_to_numeric(month)
-
-                    # Construire l'objet datetime
                     datetime_obj = datetime.datetime(year, month_numeric, day)
-
-                    # Formater la date avec les noms complets du jour et du mois
                     formatted_date = datetime_obj.strftime('%A %d %B %Y')
-
                     return formatted_date
                 else:
                     return None
 
             def convert_month_to_numeric(self, month):
-                # Dictionnaire de correspondance des mois en français
                 months_mapping = {
-                    'jan': 1, 'fév': 2, 'février': 2, 'mar': 3, 'mars': 3, 'avr': 4, 'avril': 4,
+                    'jan': 1, 'fév': 2, 'février': 2, 'mar': 3, 'mars': 3, 'avr': 4, 'avr.': 4, 'avril': 4,
                     'mai': 5, 'juin': 6, 'jui': 7, 'juillet': 7, 'aoû': 8, 'août': 8, 'sep': 9,
                     'sept': 9, 'oct': 10, 'octobre': 10, 'nov': 11, 'novembre': 11, 'déc': 12, 'décembre': 12
                 }
-
-                # Convertir le mois en minuscules pour la correspondance insensible à la casse
                 month_lower = month.lower()
+                month_numeric = months_mapping.get(month_lower)
+                if month_numeric is None:
+                    raise ValueError(f"Month '{month}' not found in mapping dictionary")
+                return month_numeric
 
-                # Récupérer la représentation numérique du mois à partir du dictionnaire
-                return months_mapping.get(month_lower, None)
+
             
+        converter = DateConverter()
+
         if self.type == "aller-retour":
             outward_departure_place_text = response.css('div.journeySection_OUTBOUND_0 .info-block .port::text').get()
             outward_departure_place = re.search(r'(.+?)\s\(', outward_departure_place_text).group(1).upper()
@@ -108,10 +97,7 @@ class NouvelairSpider(scrapy.Spider):
             outward_price_text = response.css('div.journeySection_OUTBOUND_0 .middle.active-box.dayNavigation .price-text-single-line::text').get()
             outward_price = "{:.3f}".format(float(re.search(r'\d+', outward_price_text).group()))
 
-            # Conversion de la date
-            converter = DateConverter()
-
-            outward_date_text = response.css('div.journeySection_OUTBOUND_0 .info-block .date-block .date ::text').get()
+            outward_date_text = response.css('div.journeySection_OUTBOUND_0 .info-block .date-block .date::text').get()
             outward_date = converter.convert_date(outward_date_text)
 
             outward_time = response.css('div.journeySection_OUTBOUND_0 .time::text').get()
@@ -160,8 +146,7 @@ class NouvelairSpider(scrapy.Spider):
             outward_price_text = response.css('div.journeySection_OUTBOUND_0 .middle.active-box.dayNavigation .price-text-single-line::text').get()
             outward_price = "{:.3f}".format(float(re.search(r'\d+', outward_price_text).group()))
 
-            # Conversion de la date
-            outward_date_text = response.css('div.journeySection_OUTBOUND_0 .info-block .date-block .date ::text').get()
+            outward_date_text = response.css('div.journeySection_OUTBOUND_0 .info-block .date-block .date::text').get()
             outward_date = converter.convert_date(outward_date_text)
 
             outward_time = response.css('div.journeySection_OUTBOUND_0 .time::text').get()

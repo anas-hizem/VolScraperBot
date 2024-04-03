@@ -70,6 +70,7 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+
 ITEM_PIPELINES = {
    "VolScraperBot.pipelines.VolScraperBotPipeline": 300,
 }

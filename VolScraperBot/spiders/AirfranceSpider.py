@@ -41,7 +41,7 @@ class AirfranceSpider(scrapy.Spider):
         inst.click_confirm()
         inst.click_submit()
         search_url = inst.page_loaded()
-        item =  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
+        yield  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
 
 
     def parse(self, response):
@@ -63,7 +63,8 @@ class AirfranceSpider(scrapy.Spider):
         return_price = inst.get_return_travel_price(self.type)
         return_time=inst.get_return_travel_time(self.type)
         return_trip_duration = inst.get_return_trip_duration(self.type)
-        inst.click_details_button()
+        if self.type == "aller-retour":
+            inst.click_details_button()
         return_date = inst.get_return_tarvel_date(self.type)
         inst.click_exit()
         url=inst.page_loaded()

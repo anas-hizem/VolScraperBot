@@ -39,7 +39,7 @@ class TunisairSpider(scrapy.Spider):
         inst.click_confirm(self.type)
         inst.click_submit()
         search_url = inst.page_loaded()
-        item =  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
+        yield  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
 
     def parse(self, response):
         def convert_date_format(date_str):

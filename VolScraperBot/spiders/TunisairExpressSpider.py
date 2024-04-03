@@ -55,7 +55,7 @@ class TunisairExpressSpider(scrapy.Spider):
         inst.select_dates(self.check_in_date, self.check_out_date, self.type)
         inst.click_search()
         search_url = inst.page_loaded()
-        item =  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
+        yield  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
     
 
     def parse(self, response):

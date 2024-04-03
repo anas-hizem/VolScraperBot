@@ -66,17 +66,16 @@ class Booking (webdriver.Chrome):
         calendar = self.find_element(By.CSS_SELECTOR, 'div[class="MuiGrid-root date-selector-container-input   MuiGrid-container"]')
         calendar.click()        
         if  type == "aller-retour" :
-            self.implicitly_wait(30)
+            self.implicitly_wait(50)
             date_check_in = WebDriverWait(self, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_in_date}"]')))
             date_check_in.click()
-            time.sleep(1)
+            time.sleep(0.5)
             date_check_out = WebDriverWait(self, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_out_date}"]')))
             date_check_out.click() 
-            self.implicitly_wait(30)
+            self.implicitly_wait(60)
 
-        
         else :
             self.implicitly_wait(30)
             self.find_element(By.NAME,'oneWay').click()  
@@ -88,7 +87,7 @@ class Booking (webdriver.Chrome):
             
 
     def click_search(self):
-        self.implicitly_wait(30)
+        self.implicitly_wait(60)
         submiting_btn = WebDriverWait(self, 20).until(
         EC.element_to_be_clickable((By.XPATH, '//*[@id="reservation-flight-tab"]/div/div[2]/div[2]/button'))
         )
