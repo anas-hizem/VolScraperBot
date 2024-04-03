@@ -133,12 +133,16 @@ class Booking(uc.Chrome):
         submit_button.click()
 
 
-    def select_filter(self):
+    def select_filter_outward(self):
         self.implicitly_wait(60)
         WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-filters-bar/div/bw-flight-list-result-sort/div/bwc-form-input-container/div/mat-form-field/div[1]/div[2]/div/select/option[1]'))).click()
         time.sleep(1)
 
-
+    def select_filter_return(self , typeoftrip):
+        if typeoftrip=="aller-retour":
+            self.implicitly_wait(60)
+            WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-filters-bar/div/bw-flight-list-result-sort/div/bwc-form-input-container/div/mat-form-field/div[1]/div[2]/div/select/option[1]'))).click()
+            time.sleep(1)
 
     def page_loaded(self):
         return self.current_url    
@@ -194,17 +198,27 @@ class Booking(uc.Chrome):
         return(outward_trip_duration)
     
 
-    def click_details_button(self):
+    def click_details_button_outward(self):
         self.implicitly_wait(30)
         WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/bw-itinerary-details-trigger/button'))).click()
         time.sleep(1.5)
-
-
+        
+    def click_details_button_return(self , trip_type):
+        if (trip_type == "aller-retour"):
+            self.implicitly_wait(30)
+            WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/bw-itinerary-details-trigger/button'))).click()
+            time.sleep(1.5)
     
-    def click_exit(self):
+    def click_exit_outward(self):
         self.implicitly_wait(30)
         WebDriverWait(self, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR , 'button[data-test="bwsfe-flight-details__button-close"][aria-label="Fermer la fenêtre contenant les détails de votre vol"]'))).click()
         self.implicitly_wait(30)
+        
+    def click_exit_return(self , trip_type):
+        if (trip_type == "aller-retour"):
+            self.implicitly_wait(30)
+            WebDriverWait(self, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR , 'button[data-test="bwsfe-flight-details__button-close"][aria-label="Fermer la fenêtre contenant les détails de votre vol"]'))).click()
+            self.implicitly_wait(30)
 
     
     def go_to_return_travel(self,trip_type):

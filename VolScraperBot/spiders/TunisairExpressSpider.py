@@ -95,9 +95,6 @@ class TunisairExpressSpider(scrapy.Spider):
             return f"{days_mapping[day_of_week]} {day} {month} {year}"
 
 
-        
-
-
         inst = response.meta['booking_instance']
         outward_departure_place = inst.get_deparature_place()
         outward_arrival_place = inst.get_arrival_place()
@@ -113,7 +110,6 @@ class TunisairExpressSpider(scrapy.Spider):
         outward_travel_duration=inst.get_outward_travel_duration(self.type)
         return_travel_duration=inst.get_return_travel_duration(self.type)
         return_time=inst.get_time_of_return_travel(self.type)
-        inst.close_browser()
 
         
 
@@ -146,5 +142,8 @@ class TunisairExpressSpider(scrapy.Spider):
                 'url_of_vol': url_of_vol
             }
         yield item
+        
+        inst.close_browser()
+
 
     

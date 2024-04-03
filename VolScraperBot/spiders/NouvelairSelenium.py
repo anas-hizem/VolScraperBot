@@ -52,11 +52,11 @@ class Booking (webdriver.Chrome):
         )
         country_of_arrival.send_keys(place_of_arrival)
         if (str(place_of_arrival).lower() == "tunis"):
-            self.implicitly_wait(30)
+            time.sleep(0.5)
             self.find_element(By.CSS_SELECTOR , 'li[data-option-index="2"]').click()
             time.sleep(1)
         elif (str(place_of_arrival).lower() != "tunis") :
-            self.implicitly_wait(30)
+            time.sleep(0.5)
             self.find_element(By.CSS_SELECTOR , 'li[data-option-index="0"]').click()
             time.sleep(1)
 

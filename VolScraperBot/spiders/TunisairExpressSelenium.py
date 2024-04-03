@@ -188,6 +188,8 @@ class Booking (webdriver.Chrome):
             ).text
             duration_return_trip = duration_return_trip_elem.split(',')[0]
             return(duration_return_trip)
+        
+        
     def close_browser(self):
         self.quit()
     

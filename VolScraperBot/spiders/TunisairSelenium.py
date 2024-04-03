@@ -78,7 +78,7 @@ class Booking(uc.Chrome):
 
 
     def select_check_in_date(self ,check_in_date , type_trip):
-        self.implicitly_wait(30)
+        self.implicitly_wait(60)
         if(type_trip == "aller-retour"):           
             date_check_in = WebDriverWait(self, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'input[class="input-mini form-control active"][name="daterangepicker_start"]'))
@@ -90,7 +90,7 @@ class Booking(uc.Chrome):
 
 
     def select_check_out_date(self , check_out_date  ,type_trip):
-        self.implicitly_wait(30)
+        self.implicitly_wait(60)
         if(type_trip == "aller-retour"):
             date_check_out = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'input[class="input-mini form-control"][name="daterangepicker_end"]'))

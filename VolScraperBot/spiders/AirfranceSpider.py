@@ -46,7 +46,7 @@ class AirfranceSpider(scrapy.Spider):
 
     def parse(self, response):
         inst = response.meta['booking_instance']
-        inst.select_filter()
+        inst.select_filter_outward()
         outward_departure_place = inst.get_deparature_place()
         outward_arrival_place = inst.get_arrival_place()
         return_departure_place = outward_arrival_place
@@ -54,22 +54,21 @@ class AirfranceSpider(scrapy.Spider):
         outward_price = inst.get_outward_price()
         outward_time =inst.get_outward_time()
         outward_travel_duration = inst.get_outward__tarvel_duration()
-        inst.click_details_button()
+        inst.click_details_button_outward()
         outward_date =inst.get_outward_tarvel_date()
-        inst.click_exit()
+        inst.click_exit_outward()
         url=inst.page_loaded()
-        if self.type == "aller-retour":
-            inst.go_to_return_travel(self.type)
-            inst.select_filter()
-            return_price = inst.get_return_travel_price(self.type)
-            return_time=inst.get_return_travel_time(self.type)
-            return_trip_duration = inst.get_return_trip_duration(self.type)
-            inst.click_details_button()
-            return_date = inst.get_return_tarvel_date(self.type)
-            inst.click_exit()
-            url=inst.page_loaded()
+        inst.go_to_return_travel(self.type)
+        inst.select_filter_return()
+        return_price = inst.get_return_travel_price(self.type)
+        return_time=inst.get_return_travel_time(self.type)
+        return_trip_duration = inst.get_return_trip_duration(self.type)
+        inst.click_details_button_return()
+        return_date = inst.get_return_tarvel_date(self.type)
+        inst.click_exit_return()
+        url=inst.page_loaded()
 
-        
+
         if self.type == "aller-retour":
             item =  {
                 'agence': "AIRFRANCE",
@@ -99,4 +98,7 @@ class AirfranceSpider(scrapy.Spider):
                 'url_of_vol':url
             }
         yield item
+
+
+        inst.close_browser()
     
