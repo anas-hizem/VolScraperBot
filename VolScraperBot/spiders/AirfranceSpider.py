@@ -58,16 +58,16 @@ class AirfranceSpider(scrapy.Spider):
         outward_date =inst.get_outward_tarvel_date()
         inst.click_exit()
         url=inst.page_loaded()
-        inst.go_to_return_travel(self.type)
-        inst.select_filter()
-        return_price = inst.get_return_travel_price(self.type)
-        return_time=inst.get_return_travel_time(self.type)
-        return_trip_duration = inst.get_return_trip_duration(self.type)
         if self.type == "aller-retour":
+            inst.go_to_return_travel(self.type)
+            inst.select_filter()
+            return_price = inst.get_return_travel_price(self.type)
+            return_time=inst.get_return_travel_time(self.type)
+            return_trip_duration = inst.get_return_trip_duration(self.type)
             inst.click_details_button()
-        return_date = inst.get_return_tarvel_date(self.type)
-        inst.click_exit()
-        url=inst.page_loaded()
+            return_date = inst.get_return_tarvel_date(self.type)
+            inst.click_exit()
+            url=inst.page_loaded()
 
         
         if self.type == "aller-retour":

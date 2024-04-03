@@ -47,10 +47,11 @@ class NouvelairSpider(scrapy.Spider):
         inst.accept_cookies()
         inst.select_place_of_departure(self.place_of_departure) 
         inst.select_place_of_arrival(self.place_of_arrival)  
-        inst.select_dates(self.check_in_date, self.check_out_date, self.type) 
+        inst.select_dates(self.check_in_date, self.check_out_date, self.type)
+        inst.calendar_exit()
         inst.click_search()
         search_url = inst.page_loaded()
-        yield  scrapy.Request(url=search_url)
+        yield scrapy.Request(url=search_url)
 
     def parse(self, response):
         class DateConverter:

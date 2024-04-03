@@ -50,11 +50,12 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    "VolScraperBot.middlewares.VolscraperSpiderMiddleware": 543,
-#    'VolScraperBot.middlewares.ScrapeOpsFakeUserAgentMiddleware': 400,
 
-#}
+SPIDER_MIDDLEWARES = {
+   "VolScraperBot.middlewares.VolScraperBotSpiderMiddleware": 543,
+   'VolScraperBot.middlewares.ScrapeOpsFakeUserAgentMiddleware': 400,
+
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html

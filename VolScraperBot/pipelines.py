@@ -25,7 +25,9 @@ class VolScraperBotPipeline:
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
         self.collection = self.db['vols']
-
+    
+    def clear_collection(self):
+        self.collection.delete_many({})
 
     def close_spider(self, spider):
         self.client.close()

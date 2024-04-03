@@ -28,7 +28,7 @@ def main():
             check_in_date = input("Entrez la date de départ (jj/mmm/aaaa) : ")
             check_out_date = input("Entrez la date de retour (jj/mmm/aaaa) : ")
         else:
-            check_in_date = input("Entrez la date et l'heure de départ (jj/mmm/aaaa) : ")
+            check_in_date = input("Entrez la date de départ (jj/mmm/aaaa) : ")
             check_out_date = None
 
         return {
@@ -42,10 +42,10 @@ def main():
     @defer.inlineCallbacks
     def crawl():
         user_args = get_user_input() 
+        yield runner.crawl(AirfranceSpider, **user_args)
         yield runner.crawl(NouvelairSpider, **user_args)
-        # yield runner.crawl(TunisairExpressSpider, **user_args)
-        # yield runner.crawl(TunisairSpider, **user_args)
-        # yield runner.crawl(AirfranceSpider, **user_args)
+        yield runner.crawl(TunisairExpressSpider, **user_args)
+        yield runner.crawl(TunisairSpider, **user_args)
         reactor.stop()
 
     crawl()

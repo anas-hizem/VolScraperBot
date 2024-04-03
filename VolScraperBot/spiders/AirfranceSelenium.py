@@ -25,6 +25,7 @@ class Booking(uc.Chrome):
         self.implicitly_wait(60)
 
     def accept_cookies(self):
+        self.implicitly_wait(30)
         accept_button = WebDriverWait(self, 10).until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="accept_cookies_btn"]'))
         )
@@ -32,7 +33,7 @@ class Booking(uc.Chrome):
         self.implicitly_wait(30)
 
     def click_continue_buton(self):
-        time.sleep(2)
+        time.sleep(1.5)
         continue_button = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="bw-search-widget__open-search-button bwc-o-body-variant ng-tns-c811177581-11 mdc-button mat-mdc-button mat-primary mat-mdc-button-base"][aria-controls="bw-search-widget-expandable"]'))
         )
@@ -89,17 +90,17 @@ class Booking(uc.Chrome):
             }
             return month_mapping.get(month, "")
 
-        target_month =translate_month_to_french(check_in_date.split()[1])
+        target_month_elem = check_in_date.split()[1]
+        target_month =translate_month_to_french(target_month_elem)
         i=0
         while True:
-            month_name_element = self.find_element(By.CSS_SELECTOR,f'#bwc-month-{i} .bwc-month__name')
-            month_name_text = month_name_element.text
-            if (target_month.lower() == month_name_text.strip().lower()):
+            month_name_text = self.find_element(By.CSS_SELECTOR,f'.bwc-calendar__month.ng-star-inserted.viewPortMonth #bwc-month-{i} .bwc-month__name.bwc-o-subheading').text
+            if (target_month.lower() == (month_name_text.strip()).lower()):
                 break
             else :
-                alt_xpath_element = self.find_element(By.CSS_SELECTOR, '.bwc-calendar__next-month-button .mat-mdc-button-touch-target').click()
-                time.sleep(0.5)
-            i = i + 1
+                self.find_element(By.CSS_SELECTOR, '.bwc-calendar__next-month-button .mat-mdc-button-touch-target').click()
+                time.sleep(1)
+            i += 1
 
     def select_check_in_date(self, check_in_date):
         date_check_in = WebDriverWait(self, 10).until(
