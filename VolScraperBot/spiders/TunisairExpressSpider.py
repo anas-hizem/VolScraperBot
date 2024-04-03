@@ -55,7 +55,7 @@ class TunisairExpressSpider(scrapy.Spider):
         inst.select_dates(self.check_in_date, self.check_out_date, self.type)
         inst.click_search()
         search_url = inst.page_loaded()
-        yield scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
+        item =  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
     
 
     def parse(self, response):
@@ -118,7 +118,7 @@ class TunisairExpressSpider(scrapy.Spider):
         
 
         if self.type == "aller-retour":
-            yield {
+            item =  {
                 'agence' : "TUNISAIR EXPRESS",
                 'outward_date': outward_date,
                 'outward_deparature_place': outward_departure_place,
@@ -135,7 +135,7 @@ class TunisairExpressSpider(scrapy.Spider):
                 'url_of_vol': url_of_vol
             }
         else :
-            yield {
+            item =  {
                 'agence' : "TUNISAIR EXPRESS",
                 'outward_date': outward_date,
                 'outward_deparature_place': outward_departure_place,
@@ -145,5 +145,6 @@ class TunisairExpressSpider(scrapy.Spider):
                 'duration_outward':outward_travel_duration,
                 'url_of_vol': url_of_vol
             }
+        yield item
 
     

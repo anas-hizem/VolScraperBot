@@ -41,7 +41,7 @@ class AirfranceSpider(scrapy.Spider):
         inst.click_confirm()
         inst.click_submit()
         search_url = inst.page_loaded()
-        yield scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
+        item =  scrapy.Request(url=search_url, callback=self.parse, meta={'booking_instance': inst})
 
 
     def parse(self, response):
@@ -70,7 +70,7 @@ class AirfranceSpider(scrapy.Spider):
 
         
         if self.type == "aller-retour":
-            yield {
+            item =  {
                 'agence': "AIRFRANCE",
                 'outward_departure_place':outward_departure_place ,
                 'outward_arrival_place':outward_arrival_place,
@@ -87,7 +87,7 @@ class AirfranceSpider(scrapy.Spider):
                 'url_of_vol':url
             }
         else:
-            yield {
+            item =  {
                 'agence': "AIRFRANCE",
                 'outward_departure_place':outward_departure_place ,
                 'outward_arrival_place':outward_arrival_place,
@@ -97,5 +97,5 @@ class AirfranceSpider(scrapy.Spider):
                 'outward_date':outward_date,
                 'url_of_vol':url
             }
-
+        yield item
     

@@ -50,7 +50,7 @@ class NouvelairSpider(scrapy.Spider):
         inst.select_dates(self.check_in_date, self.check_out_date, self.type)  # Utilisez self.check_in_date, self.check_out_date et self.type
         inst.click_search()
         search_url = inst.page_loaded()
-        yield scrapy.Request(url=search_url)
+        item =  scrapy.Request(url=search_url)
 
     def parse(self, response):
         class DateConverter:
@@ -134,7 +134,7 @@ class NouvelairSpider(scrapy.Spider):
             duration_return_text = response.css('div.journeySection_INBOUND_1 .availability-flight-table .scheduled-flights .js-journey .js-scheduled-flight .selection-item .row .desktop-route-block .info-row .middle-block .flight-duration::text').get()
             duration_return = re.sub(r'\s', '', duration_return_text)  # Supprimer les espaces
 
-            yield {
+            item =  {
                 'agence': "NOUVELAIR",
                 'outward_departure_place': outward_departure_place,
                 'outward_arrival_place': outward_arrival_place,
@@ -169,7 +169,7 @@ class NouvelairSpider(scrapy.Spider):
             duration_outward_text = response.css('div.journeySection_OUTBOUND_0 div.middle-block span.flight-duration::text').get()
             duration_outward = re.sub(r'\s', '', duration_outward_text)  # Supprimer les espaces
 
-            yield {
+            item =  {
                 'agence': "NOUVELAIR",
                 'outward_departure_place': outward_departure_place,
                 'outward_arrival_place': outward_arrival_place,
@@ -179,4 +179,5 @@ class NouvelairSpider(scrapy.Spider):
                 'duration_outward': duration_outward,
                 'url_of_vol': response.url
             }
+        yield item
 
