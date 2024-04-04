@@ -13,8 +13,8 @@ class Booking (webdriver.Chrome):
         opts.add_argument("--headless") 
         self.driver_path = driver_path
         os.environ['PATH'] += self.driver_path
-        serv= Service(executable_path=driver_path)
-        super().__init__(service=serv) 
+        super(Booking,self).__init__() 
+        self.implicitly_wait(15)
         self.maximize_window()
     
     def land_first_page (self) :

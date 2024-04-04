@@ -67,7 +67,6 @@ class AirfranceSpider(scrapy.Spider):
         inst.click_details_button_return(self.type)
         return_date = inst.get_return_tarvel_date(self.type)
         inst.click_exit_return(self.type)
-        url=inst.page_loaded()
 
 
         if self.type == "aller-retour":
@@ -87,6 +86,7 @@ class AirfranceSpider(scrapy.Spider):
                 'return_date':return_date,
                 'url_of_vol':url
             }
+
         else:
             item =  {
                 'agence': "AIRFRANCE",
@@ -99,7 +99,9 @@ class AirfranceSpider(scrapy.Spider):
                 'url_of_vol':url
             }
         yield item
-
-
+        
         inst.close_browser()
+
+
+
     

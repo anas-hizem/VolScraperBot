@@ -123,6 +123,8 @@ class TunisairSpider(scrapy.Spider):
                 'url_of_vol':url 
             }
         yield item
+
+        
         inst.close_browser()
 
     
