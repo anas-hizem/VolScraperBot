@@ -13,11 +13,12 @@ import selenium
 
 class Booking(uc.Chrome): 
     def __init__(self, driver_path="C:/Users/HIZEM/Desktop/PCD/VolScraperBot/chromedriver.exe"):
-        chrome_options = uc.ChromeOptions()
-        chrome_options.add_argument("--headless") 
+        opts = uc.ChromeOptions()
+        opts.add_argument("--headless") 
         self.driver_path = driver_path
         os.environ['PATH'] += self.driver_path
-        super().__init__(service=Service(executable_path=driver_path)) 
+        serv= Service(executable_path=driver_path)
+        super().__init__(service=serv) 
         self.maximize_window()
 
     def land_first_page (self) :

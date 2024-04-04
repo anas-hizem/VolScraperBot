@@ -9,12 +9,12 @@ from selenium.webdriver.common.keys import Keys
 
 class Booking (webdriver.Chrome): 
     def __init__(self, driver_path="C:/Users/HIZEM/Desktop/PCD/VolScraperBot/chromedriver.exe") :
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless") 
+        opts = webdriver.ChromeOptions()
+        opts.add_argument("--headless") 
         self.driver_path = driver_path
         os.environ['PATH'] += self.driver_path
-        super(Booking,self).__init__() 
-        self.implicitly_wait(15)
+        serv= Service(executable_path=driver_path)
+        super().__init__(service=serv) 
         self.maximize_window()
     
     def land_first_page (self) :

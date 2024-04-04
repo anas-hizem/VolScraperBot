@@ -12,12 +12,12 @@ import undetected_chromedriver as uc
 
 class Booking(uc.Chrome): 
     def __init__(self, driver_path="C:/Users/HIZEM/Desktop/PCD/VolScraperBot/chromedriver.exe"):
-        chrome_options = uc.ChromeOptions()
-        chrome_options.add_argument("--headless") 
+        opts = uc.ChromeOptions()
+        opts.add_argument("--headless") 
         self.driver_path = driver_path
         os.environ['PATH'] += self.driver_path
-        super().__init__(service=Service(executable_path=driver_path))  
-        self.implicitly_wait(15)
+        serv= Service(executable_path=driver_path)
+        super().__init__(service=serv) 
         self.maximize_window()
 
     def land_first_page (self) :
@@ -35,7 +35,7 @@ class Booking(uc.Chrome):
     def click_continue_buton(self):
         time.sleep(1.5)
         continue_button = WebDriverWait(self, 20).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="bw-search-widget__open-search-button bwc-o-body-variant ng-tns-c811177581-11 mdc-button mat-mdc-button mat-primary mat-mdc-button-base"][aria-controls="bw-search-widget-expandable"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[data-test="bwsfe-widget__open-search-button"][aria-controls="bw-search-widget-expandable"]'))
         )
         continue_button.click()
         self.implicitly_wait(60)
@@ -55,7 +55,7 @@ class Booking(uc.Chrome):
         country_of_departure.send_keys(place_of_departure)
         country_of_departure.send_keys(Keys.ENTER)            
 
-    def select_place_of_arrival(self,place_of_arrival) : # Utilisez self.place_of_departure
+    def select_place_of_arrival(self,place_of_arrival) : 
         country_of_arrival = WebDriverWait(self, 10).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[data-test-value="destination"][ placeholder="Arrivée à"]'))
         )
@@ -94,13 +94,17 @@ class Booking(uc.Chrome):
         target_month =translate_month_to_french(target_month_elem)
         i=0
         while True:
-            month_name_text = self.find_element(By.CSS_SELECTOR,f'.bwc-calendar__month.ng-star-inserted.viewPortMonth #bwc-month-{i} .bwc-month__name.bwc-o-subheading').text
-            if (target_month.lower() == (month_name_text.strip()).lower()):
+            month_name_text_1 = self.find_element(By.CSS_SELECTOR,f'.bwc-calendar__month.ng-star-inserted.viewPortMonth #bwc-month-{i} .bwc-month__name.bwc-o-subheading').text
+            month_name_text_2 = self.find_element(By.CSS_SELECTOR,f'.bwc-calendar__month.ng-star-inserted.viewPortMonth #bwc-month-{i+1} .bwc-month__name.bwc-o-subheading').text 
+            if (target_month.lower() == (month_name_text_1.strip()).lower()):
                 break
+            elif (target_month.lower() == (month_name_text_2.strip()).lower()):
+                break            
             else :
                 self.find_element(By.CSS_SELECTOR, '.bwc-calendar__next-month-button .mat-mdc-button-touch-target').click()
                 time.sleep(1)
             i += 1
+        return i
 
     def select_check_in_date(self, check_in_date):
         date_check_in = WebDriverWait(self, 10).until(
@@ -108,7 +112,39 @@ class Booking(uc.Chrome):
         )
         date_check_in.click()
 
+    def scrol_to_check_out_date(self, check_out_date, type_of_travel ,i):
+        if (type_of_travel == "aller-retour"):
 
+            def translate_month_to_french(month):
+                month_mapping = {
+                    "January": "Janvier",
+                    "February": "Février",
+                    "March": "Mars",
+                    "April": "Avril",
+                    "May": "Mai",
+                    "June": "Juin",
+                    "July": "Juillet",
+                    "August": "Août",
+                    "September": "Septembre",
+                    "October": "Octobre",
+                    "November": "Novembre",
+                    "December": "Décembre"
+                }
+                return month_mapping.get(month, "")
+
+            target_month_elem = check_out_date.split()[1]
+            target_month =translate_month_to_french(target_month_elem)
+            while True:
+                month_name_text_1 = self.find_element(By.CSS_SELECTOR,f'.bwc-calendar__month.ng-star-inserted.viewPortMonth #bwc-month-{i} .bwc-month__name.bwc-o-subheading').text
+                month_name_text_2 = self.find_element(By.CSS_SELECTOR,f'.bwc-calendar__month.ng-star-inserted.viewPortMonth #bwc-month-{i+1} .bwc-month__name.bwc-o-subheading').text 
+                if (target_month.lower() == (month_name_text_1.strip()).lower()):
+                    break
+                elif (target_month.lower() == (month_name_text_2.strip()).lower()):
+                    break            
+                else :
+                    self.find_element(By.CSS_SELECTOR, '.bwc-calendar__next-month-button .mat-mdc-button-touch-target').click()
+                    time.sleep(1)
+                i += 1
 
     def select_check_out_date (self,check_out_date,typeoftrip):
         if typeoftrip=="aller-retour":
@@ -227,7 +263,7 @@ class Booking(uc.Chrome):
             WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/div/bw-itinerary-select/button'))).click()
             self.implicitly_wait(50)
             next_page_button_confirm = WebDriverWait(self, 20).until(
-                EC.presence_of_element_located((By.XPATH ,'//*[@id="mat-tab-content-4-0"]/div/section/div/bws-flight-upsell-item/div/div[2]/bws-flight-upsell-confirm/button/span[2]'))
+                EC.presence_of_element_located((By.CSS_SELECTOR ,'button[class="bws-flight-upsell-confirm__button mdc-button mdc-button--raised mat-mdc-raised-button mat-accent mat-mdc-button-base"][data-test="bws-flight-upsell-confirm__button"]'))
             )
             self.execute_script("arguments[0].click();", next_page_button_confirm)
             self.implicitly_wait(50)
