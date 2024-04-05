@@ -108,7 +108,7 @@ class Booking(uc.Chrome):
 
     def select_check_in_date(self, check_in_date):
         date_check_in = WebDriverWait(self, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[class="bwc-day__button mdc-button mat-mdc-button mat-primary mat-mdc-button-base"][aria-label="{check_in_date}"]'))
+            EC.element_to_be_clickable((By.CSS_SELECTOR, f'button[aria-label="{check_in_date}"][class="bwc-day__button mdc-button mat-mdc-button mat-primary mat-mdc-button-base"]'))
         )
         date_check_in.click()
 
@@ -143,7 +143,7 @@ class Booking(uc.Chrome):
                     break            
                 else :
                     self.find_element(By.CSS_SELECTOR, '.bwc-calendar__next-month-button .mat-mdc-button-touch-target').click()
-                    time.sleep(1)
+                    time.sleep(1.5)
                 i += 1
 
     def select_check_out_date (self,check_out_date,typeoftrip):

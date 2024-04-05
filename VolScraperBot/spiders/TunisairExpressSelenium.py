@@ -37,7 +37,7 @@ class Booking (webdriver.Chrome):
         self.implicitly_wait(60)
         if place_of_departure == 'TUN':
             arrival_places = {'ORY': 15, 'ROM': 12, 'NAP': 10, 'MLA': 9, 'PMO': 11, 'CZL': 14, 'MJI': 13}
-            i= arrival_places.get(place_of_arrival, 15) 
+            i= arrival_places.get(place_of_arrival) 
         else :
             i = 2
         country_of_arrival = WebDriverWait(self,10).until(
