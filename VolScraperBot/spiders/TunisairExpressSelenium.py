@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 
 class Booking (webdriver.Chrome): 
-    def __init__(self, driver_path="C:/Users/HIZEM/Desktop/PCD/VolScraperBot/chromedriver.exe") :
+    def __init__(self, driver_path="C:/Users/HIZEM/Desktop/VolScraper/VolScraperBot/chromedriver.exe") :
         opts = webdriver.ChromeOptions()
         opts.add_argument("--headless") 
         self.driver_path = driver_path

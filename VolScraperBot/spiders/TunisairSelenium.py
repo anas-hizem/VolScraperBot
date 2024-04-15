@@ -12,7 +12,7 @@ import undetected_chromedriver as uc
 import selenium
 
 class Booking(uc.Chrome): 
-    def __init__(self, driver_path="C:/Users/HIZEM/Desktop/PCD/VolScraperBot/chromedriver.exe"):
+    def __init__(self, driver_path="C:/Users/HIZEM/Desktop/VolScraper/VolScraperBot/chromedriver.exe"):
         opts = uc.ChromeOptions()
         opts.add_argument("--headless") 
         self.driver_path = driver_path

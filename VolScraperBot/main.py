@@ -14,22 +14,30 @@ from spiders.AirfranceSpider import AirfranceSpider
 from spiders.TunisairSpider import TunisairSpider
 
 
-def main():
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route('/api/search_flights', methods=['POST'])
+def submit_form():
+    data = request.json
+    print(data)
+    main(data)
+    return jsonify({"message": "Form submitted successfully"})
+
+def main(data):
     configure_logging()
     settings = get_project_settings()
     runner = CrawlerRunner(settings)
 
-    def get_user_input():
-        place_of_departure = input("Entrez le lieu de départ : ")
-        place_of_arrival = input("Entrez le lieu d'arrivée : ")
-        travel_type = input("Entrez le type (aller-retour ou aller-simple) : ")
-
-        if travel_type == 'aller-retour':
-            check_in_date = input("Entrez la date de départ (jj/mmm/aaaa) : ")
-            check_out_date = input("Entrez la date de retour (jj/mmm/aaaa) : ")
-        else:
-            check_in_date = input("Entrez la date de départ (jj/mmm/aaaa) : ")
-            check_out_date = None
+    def get_user_input(data):
+        place_of_departure = data['from']
+        place_of_arrival = data['to']
+        travel_type = data['tripType']
+        check_in_date = data['startDateRoundTrip'] if travel_type == 'aller-retour' else data['startDateOneWay']
+        check_out_date = data['endDateValueRoundTrip'] if travel_type == 'aller-retour' else None
 
         return {
             'place_of_departure': place_of_departure,
@@ -41,11 +49,11 @@ def main():
 
     @defer.inlineCallbacks
     def crawl():
-        user_args = get_user_input() 
-        yield runner.crawl(AirfranceSpider, **user_args)
+        user_args = get_user_input(data) 
+        # yield runner.crawl(AirfranceSpider, **user_args)
         yield runner.crawl(NouvelairSpider, **user_args)
-        yield runner.crawl(TunisairSpider, **user_args)
-        yield runner.crawl(TunisairExpressSpider, **user_args)
+        # yield runner.crawl(TunisairSpider, **user_args)
+        # yield runner.crawl(TunisairExpressSpider, **user_args)
 
         reactor.stop()
 
@@ -53,4 +61,4 @@ def main():
     reactor.run()
 
 if __name__ == '__main__':
-    main()
+    app.run(host='localhost', port=5000, debug=False, use_reloader=False)

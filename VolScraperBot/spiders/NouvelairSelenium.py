@@ -1,18 +1,17 @@
-from selenium import webdriver #webdriver est un classe  de base qui permet d'interagir avec le navigateur importé pour utiliser les méthodes et attributs de cette classe
-# import nouvelair.constants as const
-import os
-import time
+from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait #attente explicite  sur un élément de la page
+from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+import time
+import os
+import undetected_chromedriver as uc
 
 class Booking (webdriver.Chrome): 
-    def __init__(self, driver_path="C:/Users/HIZEM/Desktop/PCD/VolScraperBot/chromedriver.exe") :
+    def __init__(self, driver_path="C:/Users/HIZEM/Desktop/VolScraper/VolScraperBot/chromedriver.exe") :
         opts = webdriver.ChromeOptions()
         opts.add_argument("--headless") 
-        self.driver_path = driver_path
-        os.environ['PATH'] += self.driver_path
+        os.environ['PATH'] += driver_path
         super(Booking,self).__init__() 
         self.implicitly_wait(15)
         self.maximize_window()
