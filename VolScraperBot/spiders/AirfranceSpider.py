@@ -17,8 +17,9 @@ class AirfranceSpider(scrapy.Spider):
 
 
 
-    def __init__(self, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None,check_out_date=None, *args, **kwargs):
+    def __init__(self, demande_id=None, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None,check_out_date=None, *args, **kwargs):
         super(AirfranceSpider, self).__init__(*args, **kwargs)
+        self.demande_id = demande_id
         self.place_of_departure = place_of_departure
         self.place_of_arrival = place_of_arrival
         self.type = type
@@ -71,6 +72,7 @@ class AirfranceSpider(scrapy.Spider):
 
         if self.type == "aller-retour":
             item =  {
+                'demande_id': self.demande_id,
                 'agence': "AIRFRANCE",
                 'outward_departure_place':outward_departure_place ,
                 'outward_arrival_place':outward_arrival_place,
@@ -89,6 +91,7 @@ class AirfranceSpider(scrapy.Spider):
 
         else:
             item =  {
+                'demande_id': self.demande_id,
                 'agence': "AIRFRANCE",
                 'outward_departure_place':outward_departure_place ,
                 'outward_arrival_place':outward_arrival_place,

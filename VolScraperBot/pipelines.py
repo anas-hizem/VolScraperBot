@@ -10,8 +10,6 @@ import pymongo
 from scrapy.exceptions import DropItem
 
 class VolScraperBotPipeline:
-    db_cleared = False 
-
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
@@ -26,11 +24,8 @@ class VolScraperBotPipeline:
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
-        self.collection = self.db['vols']
-        if not VolScraperBotPipeline.db_cleared: 
-            self.clear_collection() 
-            VolScraperBotPipeline.db_cleared = True 
-
+        self.collection = self.db['vols_scrapées']
+        
     def clear_collection(self):
         self.collection.delete_many({})
 

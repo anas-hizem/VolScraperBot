@@ -16,18 +16,26 @@ from spiders.TunisairSpider import TunisairSpider
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from pymongo import MongoClient
 
 app = Flask(__name__)
 CORS(app)
 
+client = MongoClient('mongodb://localhost:27017/')
+db = client['VolScraperBot_Data']
+collection = db['demandes_de_recherche_de_vols']
+
+
+
 @app.route('/api/search_flights', methods=['POST'])
 def submit_form():
     data = request.json
-    print(data)
-    main(data)
+    insertion_result = collection.insert_one(data)
+    demande_id = insertion_result.inserted_id  
+    main(data, demande_id) 
     return jsonify({"message": "Form submitted successfully"})
 
-def main(data):
+def main(data , demande_id):
     configure_logging()
     settings = get_project_settings()
     runner = CrawlerRunner(settings)
@@ -49,11 +57,12 @@ def main(data):
 
     @defer.inlineCallbacks
     def crawl():
-        user_args = get_user_input(data) 
-        # yield runner.crawl(AirfranceSpider, **user_args)
+        user_args = get_user_input(data)
+        user_args['demande_id'] = demande_id
+        yield runner.crawl(AirfranceSpider, **user_args)
         yield runner.crawl(NouvelairSpider, **user_args)
-        # yield runner.crawl(TunisairSpider, **user_args)
-        # yield runner.crawl(TunisairExpressSpider, **user_args)
+        yield runner.crawl(TunisairSpider, **user_args)
+        yield runner.crawl(TunisairExpressSpider, **user_args)
 
         reactor.stop()
 
@@ -61,4 +70,4 @@ def main(data):
     reactor.run()
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000, debug=False, use_reloader=False)
+    app.run(host='localhost', port=5000, debug=False, use_reloader=True )
