@@ -23,19 +23,51 @@ CORS(app)
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client['VolScraperBot_Data']
-collection = db['demandes_de_recherche_de_vols']
-
-
+collection_demandes = db['demandes_de_recherche_de_vols']
+collection_utilisateurs = db['utilisateurs']
 
 @app.route('/api/search_flights', methods=['POST'])
 def submit_form():
-    data = request.json
-    insertion_result = collection.insert_one(data)
-    demande_id = insertion_result.inserted_id  
-    main(data, demande_id) 
-    return jsonify({"message": "Form submitted successfully"})
+    data = request.json    
+    print(data)
+    if 'name' in data and 'email' in data and 'country' in data:
+        user_data = {
+            'name': data['name'],
+            'email': data['email'],
+            'country': data['country']
+        }
+        insertion_result_user = collection_utilisateurs.insert_one(user_data)
+        user_id = str(insertion_result_user.inserted_id)
+        demande_data = {
+            'user_id': user_id,
+            'tripType': data['tripType'],
+            'from': data['from'],
+            'to': data['to'],
+            'startDateRoundTrip': data.get('startDateRoundTrip', None),
+            'endDateValueRoundTrip': data.get('endDateValueRoundTrip', None),
+            'startDateOneWay': data.get('startDateOneWay', None)
+        }
+        insertion_result_demande = collection_demandes.insert_one(demande_data)
+        demande_id = str(insertion_result_demande.inserted_id)
+        main(data, demande_id) 
+        return jsonify({"message": "Form submitted successfully"})
+    else:
+        demande_data = {
+            'tripType': data['tripType'],
+            'from': data['from'],
+            'to': data['to'],
+            'startDateRoundTrip': data.get('startDateRoundTrip', None),
+            'endDateValueRoundTrip': data.get('endDateValueRoundTrip', None),
+            'startDateOneWay': data.get('startDateOneWay', None)
+        }
+        insertion_result_demande = collection_demandes.insert_one(demande_data)
+        demande_id = str(insertion_result_demande.inserted_id)
+        main(data, demande_id) 
+        return jsonify({"message": "Form submitted successfully"})
 
-def main(data , demande_id):
+
+
+def main(data, demande_id):
     configure_logging()
     settings = get_project_settings()
     runner = CrawlerRunner(settings)
@@ -59,10 +91,20 @@ def main(data , demande_id):
     def crawl():
         user_args = get_user_input(data)
         user_args['demande_id'] = demande_id
+
+        # Ajoutez un timeout pour chaque spider
+        timeout_seconds = 60  # Par exemple, 60 secondes
+        timeout_deferred = reactor.callLater(timeout_seconds, reactor.stop)
+
+
         yield runner.crawl(AirfranceSpider, **user_args)
         yield runner.crawl(NouvelairSpider, **user_args)
         yield runner.crawl(TunisairSpider, **user_args)
         yield runner.crawl(TunisairExpressSpider, **user_args)
+
+    # Annulez le timeout après que tous les spiders ont été lancés
+        if not timeout_deferred.called:
+            timeout_deferred.cancel()
 
         reactor.stop()
 

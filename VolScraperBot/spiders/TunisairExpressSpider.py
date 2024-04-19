@@ -117,7 +117,7 @@ class TunisairExpressSpider(scrapy.Spider):
         if self.type == "aller-retour":
             item =  {
                 'demande_id': self.demande_id,
-                'agence' : "TUNISAIR EXPRESS",
+                'agence' : "TUNISAIREXPRESS",
                 'outward_date': outward_date,
                 'outward_deparature_place': outward_departure_place,
                 'outward_arrival_place': outward_arrival_place,
