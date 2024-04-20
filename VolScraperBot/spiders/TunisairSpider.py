@@ -16,9 +16,9 @@ class TunisairSpider(scrapy.Spider):
 
 
 
-    def __init__(self, demande_id=None, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
+    def __init__(self, demande=None, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
         super(TunisairSpider, self).__init__(*args, **kwargs)
-        self.demande_id = demande_id
+        self.demande = demande
         self.place_of_departure = place_of_departure
         self.place_of_arrival = place_of_arrival
         self.type = type
@@ -98,7 +98,7 @@ class TunisairSpider(scrapy.Spider):
 
         if self.type == "aller-retour":
             item =  {
-                'demande_id': self.demande_id,
+                'demande': self.demande,
                 'agence': "TUNISAIR",
                 'outward_date':outward_date,
                 'outward_departure_place':outward_departure_place ,
@@ -116,7 +116,7 @@ class TunisairSpider(scrapy.Spider):
             }
         else :
             item =  {
-                'demande_id': self.demande_id,
+                'demande': self.demande,
                 'agence': "TUNISAIR",
                 'outward_date':outward_date,
                 'departure_place':outward_departure_place ,

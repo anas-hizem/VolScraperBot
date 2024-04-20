@@ -7,9 +7,9 @@ class NouvelairSpider(scrapy.Spider):
     name = "NouvelairSpider"
     allowed_domains = ["nouvelair.com"]
 
-    def __init__(self, demande_id=None, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
+    def __init__(self, demande=None, place_of_departure=None, place_of_arrival=None, type=None, check_in_date=None, check_out_date=None, *args, **kwargs):
         super(NouvelairSpider, self).__init__(*args, **kwargs)
-        self.demande_id = demande_id
+        self.demande = demande
         self.place_of_departure = place_of_departure
         self.place_of_arrival = place_of_arrival
         self.type = type
@@ -124,7 +124,7 @@ class NouvelairSpider(scrapy.Spider):
             duration_return = re.sub(r'\s', '', duration_return_text)  # Supprimer les espaces
 
             item =  {
-                'demande_id': self.demande_id,
+                'demande': self.demande,
                 'agence': "NOUVELAIR",
                 'outward_departure_place': outward_departure_place,
                 'outward_arrival_place': outward_arrival_place,
@@ -159,7 +159,7 @@ class NouvelairSpider(scrapy.Spider):
             duration_outward = re.sub(r'\s', '', duration_outward_text)  # Supprimer les espaces
 
             item =  {
-                'demande_id': self.demande_id,
+                'demande': self.demande,
                 'agence': "NOUVELAIR",
                 'outward_departure_place': outward_departure_place,
                 'outward_arrival_place': outward_arrival_place,
