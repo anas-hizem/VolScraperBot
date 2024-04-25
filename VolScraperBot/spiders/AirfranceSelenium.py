@@ -9,7 +9,7 @@ import random
 import time
 import os
 import undetected_chromedriver as uc
-
+import re
 class Booking(uc.Chrome): 
     def __init__(self, driver_path="C:/Users/HIZEM/Desktop/VolScraper/VolScraperBot/chromedriver.exe"):
         opts = uc.ChromeOptions()
@@ -190,6 +190,15 @@ class Booking(uc.Chrome):
         ).text 
         outward_trip_departure_place = outward_trip_departure_place_elem.split()[0].upper()
         return outward_trip_departure_place
+    
+    def get_deparature_place_abr(self):
+        outward_trip_departure_place_elem = WebDriverWait(self, 20).until(
+        EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-itinerary-locations/bws-flight-locations/ol/li[1]'))
+        ).text 
+        outward_trip_departure_place = outward_trip_departure_place_elem.split()[1].upper()
+        res = re.search(r'\((.*?)\)', outward_trip_departure_place).group(1).upper()
+        return res
+    
 
     def get_arrival_place(self):
         outward_trip_arrival_place_elem = WebDriverWait(self, 20).until(
@@ -201,7 +210,21 @@ class Booking(uc.Chrome):
             return(outward_trip_arrival_place)
         else:
             return(outward_trip_arrival_place.split()[0].upper())
-
+        
+    def get_arrival_place_abr(self):
+        outward_trip_arrival_place_elem = WebDriverWait(self, 20).until(
+        EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-itinerary-locations/bws-flight-locations/ol/li[2]')))
+        outward_trip_arrival_place = outward_trip_arrival_place_elem.text
+        if "correspondance" in outward_trip_arrival_place:
+            outward_trip_arrival_place_elem = WebDriverWait(self, 20).until(EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-itinerary-locations/bws-flight-locations/ol/li[3]'))).text 
+            outward_trip_arrival_place = outward_trip_arrival_place_elem.split()[1]
+            res = re.search(r'\((.*?)\)', outward_trip_arrival_place).group(1).upper()
+            return res
+        else:
+            outward_trip_arrival_place.split()[1].upper()
+            res = re.search(r'\((.*?)\)', outward_trip_arrival_place).group(1).upper()
+            return(res)
+        
     def get_outward_price(self):
         outward_price_elem = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[2]/div/bw-itinerary-select/button/span[2]/span/span/span[2]/bw-price/span'))
@@ -219,12 +242,20 @@ class Booking(uc.Chrome):
         self.implicitly_wait(30)
         return(date_outward_trip)
 
-    def get_outward_time (self):
+    def get_outward_departure_time (self):
         outward_time_element = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-times/span'))
         ).text
         outward_time_1 = outward_time_element.split(" - ")[0]
         outward_time = outward_time_1.split()[0]
+        return(outward_time)
+    
+    def get_outward_arrival_time (self):
+        outward_time_element = WebDriverWait(self, 20).until(
+            EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-times/span'))
+        ).text
+        outward_time_1 = outward_time_element.split(" - ")[1]
+        outward_time = outward_time_1.split()[1]
         return(outward_time)
     
     def get_outward__tarvel_duration(self):
@@ -277,13 +308,21 @@ class Booking(uc.Chrome):
             ).text
             return_price = return_price_elem.split()[0]
             return(return_price)
-    def get_return_travel_time(self,typeoftrip):
+    def get_return_departure_time(self,typeoftrip):
         if typeoftrip == "aller-retour":
             return_time_element = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-times/span'))
             ).text
             return_time_1 = return_time_element.split(" - ")[0]
             return_time = return_time_1.split()[0]
+            return(return_time)
+    def get_return_arrival_time(self,typeoftrip):
+        if typeoftrip == "aller-retour":
+            return_time_element = WebDriverWait(self, 20).until(
+                EC.presence_of_element_located((By.XPATH , '/html/body/bw-app/bwc-page-template/mat-sidenav-container/mat-sidenav-content/div/main/div/bw-search-result-container/div/div/section/bw-flight-lists/bw-flight-list-result-section/section/bw-itinerary-list/ol/li[1]/bw-itinerary-row/div/div/div[1]/bws-flight-times/span'))
+            ).text
+            return_time_1 = return_time_element.split(" - ")[1]
+            return_time = return_time_1.split()[1]
             return(return_time)
     def get_return_trip_duration(self,typeoftrip):
         if typeoftrip == "aller-retour":

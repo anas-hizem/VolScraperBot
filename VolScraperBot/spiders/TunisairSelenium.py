@@ -10,6 +10,7 @@ import time
 import os
 import undetected_chromedriver as uc
 import selenium
+import re
 
 class Booking(uc.Chrome): 
     def __init__(self, driver_path="C:/Users/HIZEM/Desktop/VolScraper/VolScraperBot/chromedriver.exe"):
@@ -186,6 +187,15 @@ class Booking(uc.Chrome):
         )
         place_of_departure = place_of_departure_element.text.upper()
         return  place_of_departure
+
+    def get_departure_place_abr(self):
+        place_of_departure_element = WebDriverWait(self, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR,'#calendarPerBound-cell-display-outbound > header > div.col-xs-24.standard-calendar > h2 > div:nth-child(1) > div.calendarPerBound-outbound-city.fromairport'))
+        )
+        text = place_of_departure_element.text
+        abbreviation = re.search(r'\((\w+)\)', text).group(1)
+        return abbreviation
+  
     
     def get_arrival_place(self):
         place_of_return_element = WebDriverWait(self, 10).until(
@@ -193,14 +203,29 @@ class Booking(uc.Chrome):
         )
         place_of_return = place_of_return_element.text.upper()
         return place_of_return
+    
+    def get_arrival_place_abr(self):
+        place_of_departure_element = WebDriverWait(self, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR,'#calendarPerBound-cell-display-outbound > header > div.col-xs-24.standard-calendar > h2 > div:nth-child(3) > div.calendarPerBound-outbound-city.toairport'))
+        )
+        text = place_of_departure_element.text
+        abbreviation = re.search(r'\((\w+)\)', text).group(1)
+        return abbreviation
 
-    def get_outward_time(self):
-        time_and_place_of_departure_element = WebDriverWait(self, 20).until(
+    def get_outward_departure_time(self):
+        outward_departure_time_element = WebDriverWait(self, 20).until(
             EC.presence_of_element_located((By.CSS_SELECTOR,'#tpl3_bound0-table-flightline0 .flight-details .flight-details-bound .flight-details-departure .flight-details-city'))
         )
-        time_and_place_of_departure = time_and_place_of_departure_element.text
-        time_of_departure_of_outward = time_and_place_of_departure.split()[0]
-        return  time_of_departure_of_outward
+        outward_departure_time = outward_departure_time_element.text
+        res = outward_departure_time.split()[0]
+        return  res
+    def get_outward_arrival_time(self):
+        outward_arrival_time_element = WebDriverWait(self, 20).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR,'#tpl3_bound0-table-flightline0 .flight-details .flight-details-bound .flight-details-arrival .flight-details-city'))
+        )
+        outward_arrival_time = outward_arrival_time_element.text
+        res = outward_arrival_time.split()[0]
+        return  res
 
     def get_outward__tarvel_duration(self):
         duration_outward_trip_elem = WebDriverWait(self, 20).until(
@@ -209,18 +234,23 @@ class Booking(uc.Chrome):
         duration_outward_trip = duration_outward_trip_elem.split()[2]
         return  duration_outward_trip
 
-
-
-
-    def get_return_travel_time(self, type_trip):
+    def get_return_departure_time(self, type_trip):
         if type_trip == "aller-retour":
-            time_and_place_of_return_element = WebDriverWait(self, 20).until(
+            return_departure_time_element = WebDriverWait(self, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, '#tpl3_bound1-table-flightline0 #tpl3_bound1-table-flightline-details0 .row .bound-table-flightline-header .flight-details .flight-details-bound .flight-details-departure .flight-details-city'))
             )
-            time_and_place_of_return = time_and_place_of_return_element.text
-            time_of_departure_of_return = time_and_place_of_return.split()[0]
-            return  time_of_departure_of_return
+            return_departure_time = return_departure_time_element.text
+            res = return_departure_time.split()[0]
+            return  res
 
+    def get_return_arrival_time(self, type_trip):
+        if type_trip == "aller-retour":
+            return_arrival_time_element = WebDriverWait(self, 20).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, '#tpl3_bound1-table-flightline0 #tpl3_bound1-table-flightline-details0 .row .bound-table-flightline-header .flight-details .flight-details-bound .flight-details-arrival .flight-details-city'))
+            )
+            return_arrival_time = return_arrival_time_element.text
+            res = return_arrival_time.split()[0]
+            return res
     def get_return_trip_duration(self, type_trip):
         if type_trip == "aller-retour":
             duration_return_trip_elem = WebDriverWait(self, 20).until(

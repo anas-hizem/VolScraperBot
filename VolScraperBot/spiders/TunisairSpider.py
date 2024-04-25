@@ -83,49 +83,49 @@ class TunisairSpider(scrapy.Spider):
         inst = response.meta['booking_instance']
         outward_departure_place = inst.get_deparature_place()
         outward_arrival_place = inst.get_arrival_place()
+        outward_departure_place_abr = inst.get_departure_place_abr()
+        outward_arrival_place_abr = inst.get_arrival_place_abr()
         return_departure_place = inst.get_arrival_place()
         return_arrival_place = inst.get_deparature_place()
+        return_departure_place_abr = inst.get_arrival_place_abr()
+        return_arrival_place_abr = inst.get_departure_place_abr()
         outward_date =convert_date_format(inst.get_outward_tarvel_date())
         return_date = convert_date_format(inst.get_return_tarvel_date(self.type))
         outward_price = inst.get_outward_price()
         return_price = inst.get_return_travel_price(self.type)
         inst.go_to_next_page()
-        outward_time =inst.get_outward_time()
+        outward_departure_time =inst.get_outward_departure_time()
+        outward_arrival_time =inst.get_outward_arrival_time()
         outward_travel_duration = inst.get_outward__tarvel_duration()
-        return_time=inst.get_return_travel_time(self.type)
+        return_departure_time=inst.get_return_departure_time(self.type)
+        return_arrival_time=inst.get_return_arrival_time(self.type)
         return_trip_duration = inst.get_return_trip_duration(self.type)
         url=inst.page_loaded()
 
-        if self.type == "aller-retour":
-            item =  {
-                'demande': self.demande,
-                'agence': "TUNISAIR",
-                'outward_date':outward_date,
-                'outward_departure_place':outward_departure_place ,
-                'outward_arrival_place':outward_arrival_place,
-                'outward_price':outward_price,
-                'outward_time':outward_time,
-                'duration_outward':outward_travel_duration,
-                'return_date':return_date,      
-                'return_departure_place': return_departure_place,
-                'return_arrival_place':return_arrival_place,
-                'return_price':return_price,
-                'return_time':return_time,
-                'duration_return':return_trip_duration,
-                'url_of_vol':url 
-            }
-        else :
-            item =  {
-                'demande': self.demande,
-                'agence': "TUNISAIR",
-                'outward_date':outward_date,
-                'departure_place':outward_departure_place ,
-                'arrival_place':outward_arrival_place,
-                'outward_price':outward_price,
-                'outward_time':outward_time,
-                'duration_outward':outward_travel_duration,
-                'url_of_vol':url 
-            }
+        item =  {
+            'demande': self.demande,
+            'agence': "TUNISAIR",
+            'outward_date':outward_date,
+            'outward_departure_place':outward_departure_place ,
+            'outward_arrival_place':outward_arrival_place,
+            'outward_departure_place_abr':outward_departure_place_abr ,
+            'outward_arrival_place_abr':outward_arrival_place_abr,
+            'outward_price':outward_price,
+            'outward_departure_time':outward_departure_time,
+            'outward_arrival_time':outward_arrival_time,
+            'duration_outward':outward_travel_duration,
+            'return_date':return_date,      
+            'return_departure_place': return_departure_place,
+            'return_arrival_place':return_arrival_place,
+            'return_departure_place_abr': return_departure_place_abr,
+            'return_arrival_place_abr':return_arrival_place_abr,
+            'return_price':return_price,
+            'return_departure_time':return_departure_time,
+            'return_arrival_time':return_arrival_time,
+            'duration_return':return_trip_duration,
+            'url_of_vol':url 
+        }
+
         yield item
         inst.close_browser()
 

@@ -99,51 +99,49 @@ class TunisairExpressSpider(scrapy.Spider):
         inst = response.meta['booking_instance']
         outward_departure_place = inst.get_deparature_place()
         outward_arrival_place = inst.get_arrival_place()
-        return_arrival_place = outward_arrival_place
-        return_departure_place = outward_departure_place
+        outward_departure_place_abr = self.place_of_departure
+        outward_arrival_place_abr = self.place_of_arrival
+        return_arrival_place = outward_departure_place
+        return_departure_place = outward_arrival_place
+        return_arrival_place_abr = outward_departure_place_abr
+        return_departure_place_abr = outward_arrival_place_abr
         outward_price = inst.get_outward_price()
         return_price = inst.get_return_price(self.type)
         outward_date = convert_date_format(inst.get_outward_date())
         return_date = convert_date_format(inst.get_return_date(self.type))
         url_of_vol =  inst.get_url()
         inst.click_next_page()
-        outward_time = inst.get_time_of_deparature_travel(self.type)
+        outward_departure_time = inst.get_outward_departure_time(self.type)
+        outward_arrival_time = inst.get_outward_arrival_time(self.type)
         outward_travel_duration=inst.get_outward_travel_duration(self.type)
         return_travel_duration=inst.get_return_travel_duration(self.type)
-        return_time=inst.get_time_of_return_travel(self.type)
-
+        return_departure_time = inst.get_return_departure_time(self.type)
+        return_arrival_time = inst.get_return_arrival_time(self.type)
         
 
-        if self.type == "aller-retour":
-            item =  {
-                'demande': self.demande,
-                'agence' : "TUNISAIREXPRESS",
-                'outward_date': outward_date,
-                'outward_deparature_place': outward_departure_place,
-                'outward_arrival_place': outward_arrival_place,
-                'outward_price': outward_price,
-                'outward_time': self.extraire_heure(outward_time) ,
-                'duration_outward':outward_travel_duration,
-                'return_date': return_date,
-                'return_deparature_place': return_arrival_place,
-                'return_arrival_place': return_departure_place,
-                'return_price': return_price,
-                'return_time': return_time ,
-                'duration_return':return_travel_duration,
-                'url_of_vol': url_of_vol
-            }
-        else :
-            item =  {
-                'demande': self.demande,
-                'agence' : "TUNISAIR EXPRESS",
-                'outward_date': outward_date,
-                'outward_deparature_place': outward_departure_place,
-                'outward_arrival_place': outward_arrival_place,
-                'outward_price': outward_price,
-                'outward_time': self.extraire_heure(outward_time) ,
-                'duration_outward':outward_travel_duration,
-                'url_of_vol': url_of_vol
-            }
+        item =  {
+            'demande': self.demande,
+            'agence' : "TUNISAIREXPRESS",
+            'outward_date': outward_date,
+            'outward_departure_place': outward_departure_place,
+            'outward_arrival_place': outward_arrival_place,
+            'outward_departure_place_abr': outward_departure_place_abr,
+            'outward_arrival_place_abr': outward_arrival_place_abr,
+            'outward_price': outward_price,
+            'outward_departure_time': self.extraire_heure(outward_departure_time),
+            'outward_arrival_time': self.extraire_heure(outward_arrival_time),
+            'duration_outward':outward_travel_duration,
+            'return_date': return_date,
+            'return_departure_place': return_arrival_place,
+            'return_arrival_place': return_departure_place,
+            'return_departure_place_abr': return_arrival_place_abr,
+            'return_arrival_place_abr': return_departure_place_abr,
+            'return_price': return_price,
+            'return_departure_time': self.extraire_heure(return_departure_time) ,
+            'return_arrival_time': self.extraire_heure(return_arrival_time) ,
+            'duration_return':return_travel_duration,
+            'url_of_vol': url_of_vol
+        }
         yield item
         
         inst.close_browser()

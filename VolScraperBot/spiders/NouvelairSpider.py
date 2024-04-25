@@ -90,84 +90,70 @@ class NouvelairSpider(scrapy.Spider):
             
         converter = DateConverter()
 
-        if self.type == "aller-retour":
-            outward_departure_place_text = response.css('div.journeySection_OUTBOUND_0 .info-block .port::text').get()
-            outward_departure_place = re.search(r'(.+?)\s\(', outward_departure_place_text).group(1).upper()
+        outward_departure_place_text = response.css('div.journeySection_OUTBOUND_0 .info-block .port::text').get()
+        outward_departure_place = re.search(r'(.+?)\s\(', outward_departure_place_text).group(1).upper()
+        outward_departure_place_abr = re.search(r'\((.*?)\)', outward_departure_place_text).group(1).strip().upper()
 
-            outward_arrival_place_text = response.css('div.journeySection_OUTBOUND_0 .info-block.right-info-block.text-right .port::text').get()
-            outward_arrival_place = re.search(r'(.+?)\s\(', outward_arrival_place_text).group(1).upper()
+        outward_arrival_place_text = response.css('div.journeySection_OUTBOUND_0 .info-block.right-info-block.text-right .port::text').get()
+        outward_arrival_place = re.search(r'(.+?)\s\(', outward_arrival_place_text).group(1).upper()
+        outward_arrival_place_abr = re.search(r'\((.*?)\)', outward_arrival_place_text).group(1).strip().upper()
 
-            outward_price_text = response.css('div.journeySection_OUTBOUND_0 .middle.active-box.dayNavigation .price-text-single-line::text').get()
-            outward_price = "{:.3f}".format(float(re.search(r'\d+', outward_price_text).group()))
+        outward_price_text = response.css('div.journeySection_OUTBOUND_0 .middle.active-box.dayNavigation .price-text-single-line::text').get()
+        outward_price = "{:.3f}".format(float(re.search(r'\d+', outward_price_text).group()))
 
-            outward_date_text = response.css('div.journeySection_OUTBOUND_0 .info-block .date-block .date::text').get()
-            outward_date = converter.convert_date(outward_date_text)
+        outward_date_text = response.css('div.journeySection_OUTBOUND_0 .info-block .date-block .date::text').get()
+        outward_date = converter.convert_date(outward_date_text)
 
-            outward_time = response.css('div.journeySection_OUTBOUND_0 .time::text').get()
+        outward_departure_time = response.css('div.journeySection_OUTBOUND_0 .info-block .time::text').get()
+        outward_arrival_time = response.css('div.journeySection_OUTBOUND_0 .text-right .time::text').get()
 
-            duration_outward_text = response.css('div.journeySection_OUTBOUND_0 div.middle-block span.flight-duration::text').get()
-            duration_outward = re.sub(r'\s', '', duration_outward_text)  # Supprimer les espaces
+        duration_outward_text = response.css('div.journeySection_OUTBOUND_0 div.middle-block span.flight-duration::text').get()
+        duration_outward = re.sub(r'\s', '', duration_outward_text)  # Supprimer les espaces
 
-            return_departure_place_text = response.css('div.journeySection_INBOUND_1 .port::text').get()
-            return_departure_place = re.search(r'(.+?)\s\(', return_departure_place_text).group(1).upper()
+        return_departure_place_text = response.css('div.journeySection_INBOUND_1 .port::text').get()
+        return_departure_place = re.search(r'(.+?)\s\(', return_departure_place_text).group(1).upper()
+        return_departure_place_abr = re.search(r'\((.*?)\)', return_departure_place_text).group(1).strip().upper()
 
-            return_arrival_place_text = response.css('div.journeySection_INBOUND_1 .info-block.right-info-block.text-right .port::text').get()
-            return_arrival_place = re.search(r'(.+?)\s\(', return_arrival_place_text).group(1).upper()
 
-            return_date_text = response.css('div.journeySection_INBOUND_1 .date::text').get()
-            return_date = converter.convert_date(return_date_text)
+        return_arrival_place_text = response.css('div.journeySection_INBOUND_1 .info-block.right-info-block.text-right .port::text').get()
+        return_arrival_place = re.search(r'(.+?)\s\(', return_arrival_place_text).group(1).upper()
+        return_arrival_place_abr = re.search(r'\((.*?)\)', return_arrival_place_text).group(1).strip().upper()
 
-            return_price_text = response.css('div.journeySection_INBOUND_1 .middle.active-box.dayNavigation .price-text-single-line::text').get()
-            return_price = "{:.3f}".format(float(re.search(r'\d+', return_price_text).group()))
+        return_date_text = response.css('div.journeySection_INBOUND_1 .date::text').get()
+        return_date = converter.convert_date(return_date_text)
+        
+        return_departure_time = response.css('div.journeySection_INBOUND_1 .info-block .time::text').get()
+        return_arrival_time = response.css('div.journeySection_INBOUND_1 .text-right .time::text').get()
 
-            duration_return_text = response.css('div.journeySection_INBOUND_1 .availability-flight-table .scheduled-flights .js-journey .js-scheduled-flight .selection-item .row .desktop-route-block .info-row .middle-block .flight-duration::text').get()
-            duration_return = re.sub(r'\s', '', duration_return_text)  # Supprimer les espaces
+        return_price_text = response.css('div.journeySection_INBOUND_1 .middle.active-box.dayNavigation .price-text-single-line::text').get()
+        return_price = "{:.3f}".format(float(re.search(r'\d+', return_price_text).group()))
 
-            item =  {
-                'demande': self.demande,
-                'agence': "NOUVELAIR",
-                'outward_departure_place': outward_departure_place,
-                'outward_arrival_place': outward_arrival_place,
-                'outward_date': outward_date,
-                'outward_price': outward_price,
-                'outward_time': outward_time,
-                'duration_outward': duration_outward,
-                'return_departure_place': return_departure_place,
-                'return_arrival_place': return_arrival_place,
-                'return_date': return_date,
-                'return_price': return_price,
-                'return_time': response.css('div.journeySection_INBOUND_1 .time::text').get(),
-                'duration_return': duration_return,
-                'url_of_vol': response.url
-            }
-        else:
-            outward_departure_place_text = response.css('div.journeySection_OUTBOUND_0 .info-block .port::text').get()
-            outward_departure_place = re.search(r'(.+?)\s\(', outward_departure_place_text).group(1).upper()
+        duration_return_text = response.css('div.journeySection_INBOUND_1 .availability-flight-table .scheduled-flights .js-journey .js-scheduled-flight .selection-item .row .desktop-route-block .info-row .middle-block .flight-duration::text').get()
+        duration_return = re.sub(r'\s', '', duration_return_text)  # Supprimer les espaces
 
-            outward_arrival_place_text = response.css('div.journeySection_OUTBOUND_0 .info-block.right-info-block.text-right .port::text').get()
-            outward_arrival_place = re.search(r'(.+?)\s\(', outward_arrival_place_text).group(1).upper()
+        item =  {
+            'demande': self.demande,
+            'agence': "NOUVELAIR",
+            'outward_departure_place': outward_departure_place,
+            'outward_arrival_place': outward_arrival_place,
+            'outward_departure_place_abr': outward_departure_place_abr,
+            'outward_arrival_place_abr': outward_arrival_place_abr,
+            'outward_date': outward_date,
+            'outward_price': outward_price,
+            'outward_departure_time': outward_departure_time,
+            'outward_arrival_time': outward_arrival_time,
+            'duration_outward': duration_outward,
+            'return_departure_place': return_departure_place,
+            'return_arrival_place': return_arrival_place,
+            'return_departure_place_abr': return_departure_place_abr,
+            'return_arrival_place_abr': return_arrival_place_abr,
+            'return_date': return_date,
+            'return_price': return_price,
+            'return_departure_time': return_departure_time,
+            'return_arrival_time': return_arrival_time,
+            'duration_return': duration_return,
+             'url_of_vol': response.url
+        }
 
-            outward_price_text = response.css('div.journeySection_OUTBOUND_0 .middle.active-box.dayNavigation .price-text-single-line::text').get()
-            outward_price = "{:.3f}".format(float(re.search(r'\d+', outward_price_text).group()))
-
-            outward_date_text = response.css('div.journeySection_OUTBOUND_0 .info-block .date-block .date::text').get()
-            outward_date = converter.convert_date(outward_date_text)
-
-            outward_time = response.css('div.journeySection_OUTBOUND_0 .time::text').get()
-
-            duration_outward_text = response.css('div.journeySection_OUTBOUND_0 div.middle-block span.flight-duration::text').get()
-            duration_outward = re.sub(r'\s', '', duration_outward_text)  # Supprimer les espaces
-
-            item =  {
-                'demande': self.demande,
-                'agence': "NOUVELAIR",
-                'outward_departure_place': outward_departure_place,
-                'outward_arrival_place': outward_arrival_place,
-                'outward_date': outward_date,
-                'outward_price': outward_price,
-                'outward_time': outward_time,
-                'duration_outward': duration_outward,
-                'url_of_vol': response.url
-            }
         yield item
 

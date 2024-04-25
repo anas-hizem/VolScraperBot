@@ -128,12 +128,15 @@ class Booking (webdriver.Chrome):
         ).text
         return outward_place
 
+
+    
     def get_arrival_place(self) :
         return_place = WebDriverWait(self, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '#calendarPerBound-cell-display-outbound .calendarPerBound-outbound-city.tocity'))
         ).text
         return return_place   
 
+    
 
 
     def get_url(self):
@@ -148,7 +151,7 @@ class Booking (webdriver.Chrome):
         time.sleep(0.5)
 
     
-    def get_time_of_deparature_travel(self,typeoftrip):
+    def get_outward_departure_time(self,typeoftrip):
         if typeoftrip=="aller-simple":
             time_of_departure = WebDriverWait(self, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'div#s23 div.tripsummary-itinerary-details div.tripsummary-details .tripsummary-time'))).text
@@ -159,10 +162,30 @@ class Booking (webdriver.Chrome):
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'div#s27 div.tripsummary-itinerary-details div.tripsummary-details .tripsummary-time'))).text
             return time_of_departure
 
-    def get_time_of_return_travel(self,typeoftrip):
+    
+    def get_outward_arrival_time(self, typeoftrip):
+        if typeoftrip == "aller-simple":
+            arrival_time = WebDriverWait(self, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, '#s23 > div > div.tripsummary-itinerary-details.col-xs-20 > div:nth-child(3) > time'))).text
+            return arrival_time
+        else:
+            arrival_time = WebDriverWait(self, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, '#s27 > div > div.tripsummary-itinerary-details.col-xs-20 > div:nth-child(3) > time'))).text
+            return arrival_time
+
+
+
+    def get_return_departure_time(self,typeoftrip):
         if typeoftrip=="aller-retour":
             time_of_return = WebDriverWait(self, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'div#s28 div.tripsummary-itinerary-details div.tripsummary-details .tripsummary-time'))
+            ).text
+            return (time_of_return)
+        
+    def get_return_arrival_time(self,typeoftrip):
+        if typeoftrip=="aller-retour":
+            time_of_return = WebDriverWait(self, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, '#s28 > div.tripsummary-itinerary.row > div.tripsummary-itinerary-details.col-xs-20 > div:nth-child(3) > time'))
             ).text
             return (time_of_return)
         

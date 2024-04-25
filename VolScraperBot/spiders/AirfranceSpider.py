@@ -51,10 +51,15 @@ class AirfranceSpider(scrapy.Spider):
         inst.select_filter_outward()
         outward_departure_place = inst.get_deparature_place()
         outward_arrival_place = inst.get_arrival_place()
+        outward_departure_place_abr = inst.get_deparature_place_abr()
+        outward_arrival_place_abr = inst.get_arrival_place_abr()
         return_departure_place = outward_arrival_place
         return_arrival_place = outward_departure_place
+        return_departure_place_abr = outward_arrival_place_abr
+        return_arrival_place_abr = outward_departure_place_abr
         outward_price = inst.get_outward_price()
-        outward_time =inst.get_outward_time()
+        outward_departure_time =inst.get_outward_departure_time()
+        outward_arrival_time =inst.get_outward_arrival_time()
         outward_travel_duration = inst.get_outward__tarvel_duration()
         inst.click_details_button_outward()
         outward_date =inst.get_outward_tarvel_date()
@@ -63,44 +68,37 @@ class AirfranceSpider(scrapy.Spider):
         inst.go_to_return_travel(self.type)
         inst.select_filter_return(self.type)
         return_price = inst.get_return_travel_price(self.type)
-        return_time=inst.get_return_travel_time(self.type)
+        return_departure_time=inst.get_return_departure_time(self.type)
+        return_arrival_time=inst.get_return_arrival_time(self.type)
         return_trip_duration = inst.get_return_trip_duration(self.type)
         inst.click_details_button_return(self.type)
         return_date = inst.get_return_tarvel_date(self.type)
         inst.click_exit_return(self.type)
 
 
-        if self.type == "aller-retour":
-            item =  {
-                'demande': self.demande,
-                'agence': "AIRFRANCE",
-                'outward_departure_place':outward_departure_place ,
-                'outward_arrival_place':outward_arrival_place,
-                'outward_price':outward_price,
-                'outward_time':outward_time,
-                'duration_outward':outward_travel_duration + 'm',
-                'outward_date':outward_date,
-                'return_departure_place': return_departure_place,
-                'return_arrival_place':return_arrival_place,
-                'return_price':return_price,
-                'return_time':return_time,
-                'duration_return':return_trip_duration + 'm',
-                'return_date':return_date,
-                'url_of_vol':url
-            }
-
-        else:
-            item =  {
-                'demande': self.demande,
-                'agence': "AIRFRANCE",
-                'outward_departure_place':outward_departure_place ,
-                'outward_arrival_place':outward_arrival_place,
-                'outward_price':outward_price,
-                'outward_time':outward_time,
-                'duration_outward':outward_travel_duration + 'm',
-                'outward_date':outward_date,
-                'url_of_vol':url
-            }
+        item =  {
+            'demande': self.demande,
+            'agence': "AIRFRANCE",
+            'outward_departure_place':outward_departure_place ,
+            'outward_arrival_place':outward_arrival_place,
+            'outward_departure_place_abr':outward_departure_place_abr,
+            'outward_arrival_place_abr':outward_arrival_place_abr,
+            'outward_price':outward_price,
+            'outward_departure_time':outward_departure_time,
+            'outward_arrival_time':outward_arrival_time,
+            'duration_outward':outward_travel_duration + 'm',
+            'outward_date':outward_date,
+            'return_departure_place': return_departure_place,
+            'return_arrival_place':return_arrival_place,
+            'return_departure_place_abr': return_departure_place_abr,
+            'return_arrival_place_abr':return_arrival_place_abr,
+            'return_price':return_price,
+            'return_departure_time':return_departure_time,
+            'return_arrival_time':return_arrival_time,
+            'duration_return':return_trip_duration + 'm',
+            'return_date':return_date,
+            'url_of_vol':url
+        }
         yield item
         
         inst.close_browser()

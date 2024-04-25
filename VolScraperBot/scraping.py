@@ -37,10 +37,10 @@ def run_scraping(data, demande):
     def crawl():
         user_args = get_user_input(data)
         user_args['demande'] = demande
-        # yield runner.crawl(NouvelairSpider, **user_args)
-        # yield runner.crawl(AirfranceSpider, **user_args)
-        # yield runner.crawl(TunisairSpider, **user_args)
         yield runner.crawl(TunisairExpressSpider, **user_args)
+        yield runner.crawl(NouvelairSpider, **user_args)
+        # yield runner.crawl(AirfranceSpider, **user_args)
+        yield runner.crawl(TunisairSpider, **user_args)
 
         reactor.stop()
 
